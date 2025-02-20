@@ -253,6 +253,12 @@ class DokterController
         return $this->dokterModel->getPatientMedicalHistory($patientId);
     }
 
+    public function getActiveCases($doctorId)
+    {
+        return $this->dokterModel->getActiveCases($doctorId);
+    }
+
+
     public function getPrescribedMedications($patientId)
     {
         return $this->dokterModel->getPrescribedMedications($patientId);

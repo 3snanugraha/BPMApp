@@ -15,7 +15,7 @@
                     <span class="hide-menu">Menu Utama</span>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="./dashboard" aria-expanded="false">
+                    <a class="sidebar-link" href="dashboard.php" aria-expanded="false">
                         <span><i class="ti ti-layout-dashboard"></i></span>
                         <span class="hide-menu">Dasbor</span>
                     </a>
@@ -26,13 +26,13 @@
                     <span class="hide-menu">Tekanan Darah</span>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="./readings" aria-expanded="false">
+                    <a class="sidebar-link" href="pencatatan.php" aria-expanded="false">
                         <span><i class="ti ti-file"></i></span>
                         <span class="hide-menu">Pencatatan Tekanan</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="./history" aria-expanded="false">
+                    <a class="sidebar-link" href="riwayat.php" aria-expanded="false">
                         <span><i class="ti ti-chart-line"></i></span>
                         <span class="hide-menu">Riwayat Tekanan</span>
                     </a>

@@ -162,6 +162,10 @@ class PasienController
     {
         return $this->pasienModel->getAllPatients();
     }
+    public function getRecentPatients($limit = 5)
+    {
+        return $this->pasienModel->getRecentPatients($limit);
+    }
 
     public function getPatientById($patientId)
     {

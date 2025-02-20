@@ -63,7 +63,8 @@ class RekomendasiModel
                       bp_range_systolic_min = ?,
                       bp_range_systolic_max = ?,
                       bp_range_diastolic_min = ?,
-                      bp_range_diastolic_max = ?
+                      bp_range_diastolic_max = ?,
+                      updated_at = CURRENT_TIMESTAMP
                   WHERE recommendation_id = ?";
 
         return $this->db->query($query, [
@@ -76,6 +77,7 @@ class RekomendasiModel
             $recommendationId
         ]);
     }
+
 
     public function deleteRecommendation($recommendationId)
     {

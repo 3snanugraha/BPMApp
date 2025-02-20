@@ -85,6 +85,20 @@ class DokterModel
         return $this->db->query($query, [$doctorId])->fetchAll();
     }
 
+    public function getActiveCases($doctorId)
+    {
+        $query = "SELECT COUNT(*) as count 
+                  FROM doctor_patients dp
+                  JOIN blood_pressure_readings bpr ON dp.patient_id = bpr.patient_id
+                  WHERE dp.doctor_id = ? 
+                  AND bpr.reading_date >= DATE_SUB(CURRENT_DATE, INTERVAL 30 DAY)
+                  AND (bpr.systolic >= 140 OR bpr.diastolic >= 90)";
+
+        $result = $this->db->query($query, [$doctorId])->fetch();
+        return $result['count'];
+    }
+
+
     public function assignPatient($doctorId, $patientId)
     {
         $query = "INSERT INTO doctor_patients (doctor_id, patient_id) VALUES (?, ?)";

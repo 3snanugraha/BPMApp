@@ -99,32 +99,34 @@ $totalRecommendations = count($recommendations);
                                             <?php foreach ($recommendations as $recommendation): ?>
                                                 <tr>
                                                     <td><?= htmlspecialchars($recommendation['title']) ?></td>
-                                                    <td><?= htmlspecialchars($recommendation['description']) ?></td>
-                                                    <td><?= htmlspecialchars($recommendation['bp_range_systolic_min']) ?> -
-                                                        <?= htmlspecialchars($recommendation['bp_range_systolic_max']) ?>
+                                                    <td><?= htmlspecialchars(substr($recommendation['description'], 0, 50)) . '...' ?>
                                                     </td>
-                                                    <td><?= htmlspecialchars($recommendation['bp_range_diastolic_min']) ?> -
+                                                    <td>
+                                                        <?= htmlspecialchars($recommendation['bp_range_systolic_min']) ?> -
+                                                        <?= htmlspecialchars($recommendation['bp_range_systolic_max']) ?>
+                                                        mmHg
+                                                    </td>
+                                                    <td>
+                                                        <?= htmlspecialchars($recommendation['bp_range_diastolic_min']) ?> -
                                                         <?= htmlspecialchars($recommendation['bp_range_diastolic_max']) ?>
+                                                        mmHg
                                                     </td>
                                                     <td><?= htmlspecialchars($recommendation['created_by_name']) ?></td>
-                                                    <td><?= htmlspecialchars($recommendation['created_at']) ?></td>
+                                                    <td><?= date('d/m/Y H:i', strtotime($recommendation['created_at'])) ?>
+                                                    </td>
                                                     <td>
                                                         <button type="button"
-                                                            class="btn btn-info btn-sm view-recommendation"
-                                                            data-bs-toggle="modal" data-bs-target="#viewRecommendationModal"
-                                                            data-recommendation='<?= json_encode($recommendation) ?>'>
+                                                            class="btn btn-info btn-sm view-recommendation me-1"
+                                                            data-recommendation='<?= htmlspecialchars(json_encode($recommendation), ENT_QUOTES, 'UTF-8') ?>'>
                                                             <i class="ti ti-eye"></i>
                                                         </button>
                                                         <button type="button"
-                                                            class="btn btn-warning btn-sm edit-recommendation"
-                                                            data-bs-toggle="modal" data-bs-target="#editRecommendationModal"
-                                                            data-recommendation='<?= json_encode($recommendation) ?>'>
+                                                            class="btn btn-warning btn-sm edit-recommendation me-1"
+                                                            data-recommendation='<?= htmlspecialchars(json_encode($recommendation), ENT_QUOTES, 'UTF-8') ?>'>
                                                             <i class="ti ti-edit"></i>
                                                         </button>
                                                         <button type="button"
                                                             class="btn btn-danger btn-sm delete-recommendation"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#deleteRecommendationModal"
                                                             data-id="<?= $recommendation['recommendation_id'] ?>">
                                                             <i class="ti ti-trash"></i>
                                                         </button>
@@ -174,8 +176,11 @@ $totalRecommendations = count($recommendations);
             });
 
             // Handle View Recommendation
-            $('.view-recommendation').on('click', function () {
-                var recommendation = $(this).data('recommendation');
+            $(document).on('click', '.view-recommendation', function () {
+                var recommendationStr = $(this).attr('data-recommendation');
+                var recommendation = JSON.parse(recommendationStr);
+
+                // Populate view modal
                 $('#view_title').text(recommendation.title);
                 $('#view_description').text(recommendation.description);
                 $('#view_systolic_min').text(recommendation.bp_range_systolic_min);
@@ -183,12 +188,17 @@ $totalRecommendations = count($recommendations);
                 $('#view_diastolic_min').text(recommendation.bp_range_diastolic_min);
                 $('#view_diastolic_max').text(recommendation.bp_range_diastolic_max);
                 $('#view_created_by').text(recommendation.created_by_name);
-                $('#view_created_at').text(recommendation.created_at);
+                $('#view_created_at').text(new Date(recommendation.created_at).toLocaleString('id-ID'));
+
+                $('#viewRecommendationModal').modal('show');
             });
 
             // Handle Edit Recommendation
-            $('.edit-recommendation').on('click', function () {
-                var recommendation = $(this).data('recommendation');
+            $(document).on('click', '.edit-recommendation', function () {
+                var recommendationStr = $(this).attr('data-recommendation');
+                var recommendation = JSON.parse(recommendationStr);
+
+                // Populate edit modal
                 $('#edit_recommendation_id').val(recommendation.recommendation_id);
                 $('#edit_title').val(recommendation.title);
                 $('#edit_description').val(recommendation.description);
@@ -196,13 +206,38 @@ $totalRecommendations = count($recommendations);
                 $('#edit_systolic_max').val(recommendation.bp_range_systolic_max);
                 $('#edit_diastolic_min').val(recommendation.bp_range_diastolic_min);
                 $('#edit_diastolic_max').val(recommendation.bp_range_diastolic_max);
+
+                $('#editRecommendationModal').modal('show');
             });
 
-
             // Handle Delete Recommendation
-            $('.delete-recommendation').on('click', function () {
+            $(document).on('click', '.delete-recommendation', function () {
                 var recommendationId = $(this).data('id');
                 $('#delete_recommendation_id').val(recommendationId);
+                $('#deleteRecommendationModal').modal('show');
+            });
+
+            // Modal shown events
+            $('#viewRecommendationModal').on('shown.bs.modal', function () {
+                $(this).find('.modal-body').scrollTop(0);
+            });
+
+            $('#editRecommendationModal').on('shown.bs.modal', function () {
+                $(this).find('#edit_title').focus();
+            });
+
+            // Form validation
+            $('#editRecommendationForm').on('submit', function (e) {
+                var systolicMin = parseInt($('#edit_systolic_min').val());
+                var systolicMax = parseInt($('#edit_systolic_max').val());
+                var diastolicMin = parseInt($('#edit_diastolic_min').val());
+                var diastolicMax = parseInt($('#edit_diastolic_max').val());
+
+                if (systolicMin >= systolicMax || diastolicMin >= diastolicMax) {
+                    e.preventDefault();
+                    alert('Nilai minimum harus lebih kecil dari nilai maksimum');
+                    return false;
+                }
             });
         });
     </script>

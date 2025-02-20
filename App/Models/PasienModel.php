@@ -28,6 +28,18 @@ class PasienModel
         return $this->db->query($query, [$patientId])->fetch();
     }
 
+    public function getRecentPatients($limit)
+    {
+        $query = "SELECT p.*, u.email, u.username 
+                  FROM patient_profiles p 
+                  JOIN users u ON p.user_id = u.user_id 
+                  WHERE u.role = 'patient'
+                  ORDER BY p.patient_id DESC 
+                  LIMIT ?";
+
+        return $this->db->query($query, [$limit])->fetchAll();
+    }
+
     public function addPatient($userData, $profileData)
     {
         try {
@@ -68,6 +80,48 @@ class PasienModel
             return false;
         }
     }
+
+    public function addBloodPressureReading($data)
+    {
+        $query = "INSERT INTO blood_pressure_readings 
+                  (patient_id, systolic, diastolic, pulse_rate, notes) 
+                  VALUES (?, ?, ?, ?, ?)";
+
+        return $this->db->query($query, [
+            $data['patient_id'],
+            $data['systolic'],
+            $data['diastolic'],
+            $data['pulse_rate'],
+            $data['notes']
+        ]);
+    }
+
+    public function updateProfile($userId, $data)
+    {
+        $query = "UPDATE patient_profiles 
+                  SET full_name = ?,
+                      date_of_birth = ?,
+                      gender = ?,
+                      address = ?,
+                      phone_number = ?,
+                      emergency_contact = ?,
+                      emergency_phone = ?,
+                      medical_history = ?
+                  WHERE user_id = ?";
+
+        return $this->db->query($query, [
+            $data['full_name'],
+            $data['date_of_birth'],
+            $data['gender'],
+            $data['address'],
+            $data['phone_number'],
+            $data['emergency_contact'],
+            $data['emergency_phone'],
+            $data['medical_history'],
+            $userId
+        ]);
+    }
+
 
     public function editPatient($patientId, $data)
     {
