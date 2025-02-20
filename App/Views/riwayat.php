@@ -74,7 +74,7 @@ $monthlyAverages = $riwayatController->getMonthlyAverages();
                                                         <i class="ti ti-activity fs-6 me-3"></i>
                                                         <div>
                                                             <h2 class="text-white mb-0">
-                                                                <?= round($readingStats['avg_systolic']) ?>/<?= round($readingStats['avg_diastolic']) ?>
+                                                                <?= round((float) $readingStats['avg_systolic'] ?? 0) ?>/<?= round((float) $readingStats['avg_diastolic'] ?? 0) ?>
                                                             </h2>
                                                             <p class="mb-0">Rata-rata Tekanan Darah</p>
                                                         </div>
