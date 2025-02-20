@@ -7,8 +7,10 @@ class AuthController
 
     public function __construct()
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         $this->authModel = new AuthModel();
-        session_start();
     }
 
     public function handleRequest()
@@ -188,8 +190,37 @@ class AuthController
         }
         exit();
     }
+
+    // Add this new method to the AuthController class
+    public function isLoggedIn()
+    {
+        if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
+            return true;
+        }
+        return false;
+    }
+
+    // Example usage for protected pages
+    public function checkAuth()
+    {
+        if (!$this->isLoggedIn()) {
+            $_SESSION['error'] = 'Silakan login terlebih dahulu';
+            header('Location: ../Views/index.php');
+            exit();
+        }
+    }
+
+    public function checkLoggedIn()
+    {
+        if ($this->isLoggedIn()) {
+            header('Location: ../Views/dashboard.php');
+            exit();
+        }
+    }
+
 }
 
-// Handle incoming requests
-$controller = new AuthController();
-$controller->handleRequest();
+if (isset($_POST['action'])) {
+    $controller = new AuthController();
+    $controller->handleRequest();
+}

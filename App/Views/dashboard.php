@@ -1,3 +1,10 @@
+<?php
+require_once __DIR__ . '/../Controllers/AuthController.php';
+session_start();
+
+$auth = new AuthController();
+$auth->checkAuth(); // Redirect to login if not authenticated
+?>
 <!doctype html>
 <html lang="en">
 

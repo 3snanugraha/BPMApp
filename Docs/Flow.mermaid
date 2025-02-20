@@ -1,0 +1,81 @@
+flowchart TD
+    %% Login & Authentication
+    Start((Start)) --> Login[Login Page]
+    Login --> Auth{Authentication}
+    Auth -->|Invalid| Login
+    
+    %% Admin Flow
+    Auth -->|Admin| AdminDash[Admin Dashboard]
+    AdminDash --> ManageUsers[Manage Users]
+    AdminDash --> ManageMeds[Manage Medications]
+    AdminDash --> ViewReports[View Reports]
+    
+    ManageUsers --> CreateDoc[Create Doctor Account]
+    ManageUsers --> CreatePatient[Create Patient Account]
+    ManageUsers --> ManageRoles[Manage User Roles]
+    
+    ManageMeds --> AddMeds[Add New Medication]
+    ManageMeds --> UpdateMeds[Update Medication Info]
+    
+    %% Doctor Flow
+    Auth -->|Doctor| DoctorDash[Doctor Dashboard]
+    DoctorDash --> ViewPatients[View Patient List]
+    DoctorDash --> CheckReadings[Check BP Readings]
+    DoctorDash --> PrescribeMeds[Prescribe Medications]
+    
+    ViewPatients --> PatientDetails[Patient Details]
+    PatientDetails --> ViewHistory[View History]
+    PatientDetails --> AddNotes[Add Notes]
+    
+    CheckReadings --> AnalyzeData[Analyze Data]
+    AnalyzeData --> GiveRecom[Give Recommendations]
+    
+    PrescribeMeds --> SelectMeds[Select Medications]
+    SelectMeds --> SetDosage[Set Dosage]
+    SetDosage --> AddInstructions[Add Instructions]
+    
+    %% Patient Flow
+    Auth -->|Patient| PatientDash[Patient Dashboard]
+    PatientDash --> InputBP[Input BP Reading]
+    PatientDash --> ViewBPHistory[View BP History]
+    PatientDash --> CheckMeds[Check Medications]
+    PatientDash --> ViewRecom[View Recommendations]
+    PatientDash --> UpdateProfile[Update Profile]
+    
+    InputBP --> SaveReading[Save Reading]
+    SaveReading --> AutoAnalysis{Automatic Analysis}
+    AutoAnalysis -->|Normal| SaveOnly[Save Only]
+    AutoAnalysis -->|Abnormal| Alert[Alert Doctor]
+    AutoAnalysis --> GenRecom[Generate Recommendation]
+    
+    ViewBPHistory --> ViewGraph[View Graph]
+    ViewBPHistory --> ViewTable[View Table]
+    ViewBPHistory --> ExportData[Export Data]
+    
+    CheckMeds --> ViewSchedule[View Schedule]
+    CheckMeds --> MarkTaken[Mark as Taken]
+    
+    ViewRecom --> LifestyleRec[Lifestyle Recommendations]
+    ViewRecom --> MedicalRec[Medical Recommendations]
+    
+    %% Data Flow
+    subgraph Database
+    UserData[(User Data)]
+    BPData[(BP Readings)]
+    MedData[(Medication Data)]
+    RecData[(Recommendations)]
+    end
+    
+    SaveReading --> BPData
+    AddMeds --> MedData
+    GiveRecom --> RecData
+    UpdateProfile --> UserData
+    
+    %% Reporting System
+    ViewReports --> GenUserReport[Generate User Reports]
+    ViewReports --> GenBPReport[Generate BP Reports]
+    ViewReports --> GenMedReport[Generate Medication Reports]
+    
+    GenUserReport --> ExportReport[Export Report]
+    GenBPReport --> ExportReport
+    GenMedReport --> ExportReport

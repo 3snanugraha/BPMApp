@@ -1,3 +1,10 @@
+<?php
+require_once __DIR__ . '/../Controllers/AuthController.php';
+session_start();
+
+$auth = new AuthController();
+$auth->checkLoggedIn();
+?>
 <!doctype html>
 <html lang="en">
 
@@ -20,7 +27,7 @@
             <div class="card mb-0">
               <div class="card-body">
                 <a href="./index.html" class="text-nowrap logo-img text-center d-block py-3 w-100">
-                  <img src="assets/images/logos/dark-logo.svg" width="180" alt="">
+                  <img src="assets/images/logos/bpm_logo.png" width="180" alt="">
                 </a>
                 <p class="text-center">Sistem Monitoring Tekanan Darah</p>
                 <?php if (isset($_SESSION['error'])): ?>

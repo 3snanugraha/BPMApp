@@ -28,14 +28,18 @@
                                 <p class="mb-0 fs-3">Profil Saya</p>
                             </a>
                             <a href="./medical-records" class="d-flex align-items-center gap-2 dropdown-item">
-                                <i class="ti ti-file-medical fs-6"></i>
+                                <i class="ti ti-heart fs-6"></i>
                                 <p class="mb-0 fs-3">Rekam Medis</p>
                             </a>
                             <a href="./bp-readings" class="d-flex align-items-center gap-2 dropdown-item">
-                                <i class="ti ti-heart-rate fs-6"></i>
+                                <i class="ti ti-heart fs-6"></i>
                                 <p class="mb-0 fs-3">Data Tekanan Darah</p>
                             </a>
-                            <a href="./logout" class="btn btn-outline-primary mx-3 mt-2 d-block">Keluar</a>
+                            <form action="../Controllers/AuthController.php" method="POST">
+                                <input type="hidden" name="action" value="logout">
+                                <button type="submit"
+                                    class="btn btn-outline-primary mx-3 mt-2 d-block w-100">Keluar</button>
+                            </form>
                         </div>
                     </div>
                 </li>

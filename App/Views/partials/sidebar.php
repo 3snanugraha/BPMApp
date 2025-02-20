@@ -2,7 +2,7 @@
     <div>
         <div class="brand-logo d-flex align-items-center justify-content-between">
             <a href="./index.html" class="text-nowrap logo-img">
-                <img src="assets/images/logos/dark-logo.svg" width="180" alt="" />
+                <img src="assets/images/logos/bpm_logo.png" width="120" alt="" />
             </a>
             <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
                 <i class="ti ti-x fs-8"></i>
@@ -43,13 +43,13 @@
                     <span class="hide-menu">Medis</span>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="./medications" aria-expanded="false">
+                    <a class="sidebar-link" href="obat.php" aria-expanded="false">
                         <span><i class="ti ti-pills"></i></span>
                         <span class="hide-menu">Obat-obatan</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="./recommendations" aria-expanded="false">
+                    <a class="sidebar-link" href="rekomendasi.php" aria-expanded="false">
                         <span><i class="ti ti-list"></i></span>
                         <span class="hide-menu">Rekomendasi</span>
                     </a>
@@ -60,13 +60,13 @@
                     <span class="hide-menu">Pengguna</span>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="./doctors" aria-expanded="false">
+                    <a class="sidebar-link" href="dokter.php" aria-expanded="false">
                         <span><i class="ti ti-stethoscope"></i></span>
                         <span class="hide-menu">Dokter</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="./patients" aria-expanded="false">
+                    <a class="sidebar-link" href="pasien.php" aria-expanded="false">
                         <span><i class="ti ti-users"></i></span>
                         <span class="hide-menu">Pasien</span>
                     </a>
@@ -83,18 +83,22 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="./logout" aria-expanded="false">
-                        <span><i class="ti ti-logout"></i></span>
-                        <span class="hide-menu">Keluar</span>
-                    </a>
+                    <form action="../Controllers/AuthController.php" method="POST" id="logoutForm">
+                        <input type="hidden" name="action" value="logout">
+                        <a class="sidebar-link" href="javascript:void(0)"
+                            onclick="document.getElementById('logoutForm').submit();" aria-expanded="false">
+                            <span><i class="ti ti-logout"></i></span>
+                            <span class="hide-menu">Keluar</span>
+                        </a>
+                    </form>
                 </li>
             </ul>
             <div class="unlimited-access hide-menu bg-light-primary position-relative mb-7 mt-5 rounded">
                 <div class="d-flex">
                     <div class="unlimited-access-title me-3">
-                        <h6 class="fw-semibold fs-4 mb-6 text-dark w-85">Upgrade ke pro</h6>
-                        <a href="https://adminmart.com/product/modernize-bootstrap-5-admin-template/" target="_blank"
-                            class="btn btn-primary fs-2 fw-semibold lh-sm">Beli Pro</a>
+                        <h6 class="fw-semibold fs-4 mb-6 text-dark w-85">Laporkan Bug</h6>
+                        <a href="https://wa.me/62895339046899" target="_blank"
+                            class="btn btn-primary fs-2 fw-semibold lh-sm">Laporkan</a>
                     </div>
                     <div class="unlimited-access-img">
                         <img src="assets/images/backgrounds/rocket.png" alt="" class="img-fluid">

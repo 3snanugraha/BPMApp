@@ -1,120 +1,433 @@
--- Create database
-CREATE DATABASE blood_pressure_monitoring;
-USE blood_pressure_monitoring;
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: localhost:3306
+-- Generation Time: Feb 20, 2025 at 01:18 PM
+-- Server version: 8.0.30
+-- PHP Version: 8.1.10
 
--- Users table (for all types of users)
-CREATE TABLE users (
-    user_id INT PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    role ENUM('admin', 'doctor', 'patient') NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
 
--- Patient profiles
-CREATE TABLE patient_profiles (
-    patient_id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT UNIQUE,
-    full_name VARCHAR(100) NOT NULL,
-    date_of_birth DATE NOT NULL,
-    gender ENUM('M', 'F') NOT NULL,
-    address TEXT,
-    phone_number VARCHAR(20),
-    emergency_contact VARCHAR(100),
-    emergency_phone VARCHAR(20),
-    medical_history TEXT,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-);
 
--- Doctor profiles
-CREATE TABLE doctor_profiles (
-    doctor_id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT UNIQUE,
-    full_name VARCHAR(100) NOT NULL,
-    specialization VARCHAR(100),
-    license_number VARCHAR(50) UNIQUE NOT NULL,
-    phone_number VARCHAR(20),
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-);
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
--- Doctor-Patient relationship
-CREATE TABLE doctor_patients (
-    doctor_id INT,
-    patient_id INT,
-    assigned_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (doctor_id, patient_id),
-    FOREIGN KEY (doctor_id) REFERENCES doctor_profiles(doctor_id),
-    FOREIGN KEY (patient_id) REFERENCES patient_profiles(patient_id)
-);
+--
+-- Database: `blood_pressure_monitoring`
+--
 
--- Blood pressure readings
-CREATE TABLE blood_pressure_readings (
-    reading_id INT PRIMARY KEY AUTO_INCREMENT,
-    patient_id INT,
-    systolic INT NOT NULL,
-    diastolic INT NOT NULL,
-    pulse_rate INT,
-    reading_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    notes TEXT,
-    FOREIGN KEY (patient_id) REFERENCES patient_profiles(patient_id)
-);
+-- --------------------------------------------------------
 
--- Medications
-CREATE TABLE medications (
-    medication_id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL,
-    description TEXT,
-    dosage_form VARCHAR(50),
-    created_by INT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (created_by) REFERENCES users(user_id)
-);
+--
+-- Table structure for table `blood_pressure_readings`
+--
 
--- Patient medications
-CREATE TABLE patient_medications (
-    patient_medication_id INT PRIMARY KEY AUTO_INCREMENT,
-    patient_id INT,
-    medication_id INT,
-    dosage VARCHAR(50),
-    frequency VARCHAR(50),
-    start_date DATE,
-    end_date DATE,
-    prescribed_by INT,
-    notes TEXT,
-    FOREIGN KEY (patient_id) REFERENCES patient_profiles(patient_id),
-    FOREIGN KEY (medication_id) REFERENCES medications(medication_id),
-    FOREIGN KEY (prescribed_by) REFERENCES doctor_profiles(doctor_id)
-);
+CREATE TABLE `blood_pressure_readings` (
+  `reading_id` int NOT NULL,
+  `patient_id` int DEFAULT NULL,
+  `systolic` int NOT NULL,
+  `diastolic` int NOT NULL,
+  `pulse_rate` int DEFAULT NULL,
+  `reading_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `notes` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Health recommendations
-CREATE TABLE health_recommendations (
-    recommendation_id INT PRIMARY KEY AUTO_INCREMENT,
-    title VARCHAR(100) NOT NULL,
-    description TEXT NOT NULL,
-    bp_range_systolic_min INT,
-    bp_range_systolic_max INT,
-    bp_range_diastolic_min INT,
-    bp_range_diastolic_max INT,
-    created_by INT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (created_by) REFERENCES users(user_id)
-);
+--
+-- Dumping data for table `blood_pressure_readings`
+--
 
--- Patient recommendations log
-CREATE TABLE patient_recommendations (
-    patient_recommendation_id INT PRIMARY KEY AUTO_INCREMENT,
-    patient_id INT,
-    recommendation_id INT,
-    reading_id INT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (patient_id) REFERENCES patient_profiles(patient_id),
-    FOREIGN KEY (recommendation_id) REFERENCES health_recommendations(recommendation_id),
-    FOREIGN KEY (reading_id) REFERENCES blood_pressure_readings(reading_id)
-);
+INSERT INTO `blood_pressure_readings` (`reading_id`, `patient_id`, `systolic`, `diastolic`, `pulse_rate`, `reading_date`, `notes`) VALUES
+(1, 1, 130, 85, 75, '2025-02-19 22:05:47', 'Pengukuran pagi hari'),
+(2, 1, 135, 88, 78, '2025-02-19 22:05:47', 'Setelah olahraga'),
+(3, 2, 128, 82, 72, '2025-02-19 22:05:47', 'Pengukuran rutin'),
+(4, 2, 125, 80, 70, '2025-02-19 22:05:47', 'Kondisi istirahat');
 
--- Create indexes for better performance
-CREATE INDEX idx_bp_readings_patient_date ON blood_pressure_readings(patient_id, reading_date);
-CREATE INDEX idx_patient_meds_patient ON patient_medications(patient_id);
-CREATE INDEX idx_patient_recommendations_patient ON patient_recommendations(patient_id);
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `doctor_patients`
+--
+
+CREATE TABLE `doctor_patients` (
+  `doctor_id` int NOT NULL,
+  `patient_id` int NOT NULL,
+  `assigned_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `doctor_patients`
+--
+
+INSERT INTO `doctor_patients` (`doctor_id`, `patient_id`, `assigned_date`) VALUES
+(1, 1, '2025-02-19 22:05:47'),
+(2, 2, '2025-02-19 22:05:47');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `doctor_profiles`
+--
+
+CREATE TABLE `doctor_profiles` (
+  `doctor_id` int NOT NULL,
+  `user_id` int DEFAULT NULL,
+  `full_name` varchar(100) NOT NULL,
+  `specialization` varchar(100) DEFAULT NULL,
+  `license_number` varchar(50) NOT NULL,
+  `phone_number` varchar(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `doctor_profiles`
+--
+
+INSERT INTO `doctor_profiles` (`doctor_id`, `user_id`, `full_name`, `specialization`, `license_number`, `phone_number`) VALUES
+(1, 2, 'Dr. Budi Santoso', 'Spesialis Jantung', 'IDN-123456', '081234567890'),
+(2, 3, 'Dr. Ani Wijaya', 'Spesialis Penyakit Dalam', 'IDN-789012', '081234567891');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `health_recommendations`
+--
+
+CREATE TABLE `health_recommendations` (
+  `recommendation_id` int NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `description` text NOT NULL,
+  `bp_range_systolic_min` int DEFAULT NULL,
+  `bp_range_systolic_max` int DEFAULT NULL,
+  `bp_range_diastolic_min` int DEFAULT NULL,
+  `bp_range_diastolic_max` int DEFAULT NULL,
+  `created_by` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `health_recommendations`
+--
+
+INSERT INTO `health_recommendations` (`recommendation_id`, `title`, `description`, `bp_range_systolic_min`, `bp_range_systolic_max`, `bp_range_diastolic_min`, `bp_range_diastolic_max`, `created_by`, `created_at`) VALUES
+(1, 'Tekanan Darah Normal', 'Pertahankan pola hidup sehat dengan diet seimbang dan olahraga teratur', 90, 120, 60, 80, 1, '2025-02-19 22:05:47'),
+(2, 'Prehipertensi', 'Kurangi asupan garam, tingkatkan aktivitas fisik, hindari stres', 120, 140, 80, 90, 1, '2025-02-19 22:05:47'),
+(3, 'Hipertensi', 'Konsultasi dengan dokter, ikuti pengobatan yang diresepkan, pantau tekanan darah secara teratur', 140, 180, 90, 120, 1, '2025-02-19 22:05:47');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `medications`
+--
+
+CREATE TABLE `medications` (
+  `medication_id` int NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `description` text,
+  `dosage_form` varchar(50) DEFAULT NULL,
+  `created_by` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `medications`
+--
+
+INSERT INTO `medications` (`medication_id`, `name`, `description`, `dosage_form`, `created_by`, `created_at`) VALUES
+(1, 'Amlodipin', 'Obat untuk menurunkan tekanan darah tinggi', 'Tablet 5mg', 1, '2025-02-19 22:05:47'),
+(2, 'Captopril', 'ACE inhibitor untuk hipertensi', 'Tablet 25mg', 1, '2025-02-19 22:05:47'),
+(3, 'Bisoprolol', 'Beta blocker untuk tekanan darah', 'Tablet 5mg', 1, '2025-02-19 22:05:47');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `patient_medications`
+--
+
+CREATE TABLE `patient_medications` (
+  `patient_medication_id` int NOT NULL,
+  `patient_id` int DEFAULT NULL,
+  `medication_id` int DEFAULT NULL,
+  `dosage` varchar(50) DEFAULT NULL,
+  `frequency` varchar(50) DEFAULT NULL,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `prescribed_by` int DEFAULT NULL,
+  `notes` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `patient_medications`
+--
+
+INSERT INTO `patient_medications` (`patient_medication_id`, `patient_id`, `medication_id`, `dosage`, `frequency`, `start_date`, `end_date`, `prescribed_by`, `notes`) VALUES
+(1, 1, 1, '1 tablet', 'Sekali sehari', '2023-01-01', '2024-01-01', 1, 'Diminum pagi hari'),
+(2, 2, 2, '1 tablet', 'Dua kali sehari', '2023-01-01', '2024-01-01', 2, 'Diminum pagi dan malam');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `patient_profiles`
+--
+
+CREATE TABLE `patient_profiles` (
+  `patient_id` int NOT NULL,
+  `user_id` int DEFAULT NULL,
+  `full_name` varchar(100) NOT NULL,
+  `date_of_birth` date NOT NULL,
+  `gender` enum('M','F') NOT NULL,
+  `address` text,
+  `phone_number` varchar(20) DEFAULT NULL,
+  `emergency_contact` varchar(100) DEFAULT NULL,
+  `emergency_phone` varchar(20) DEFAULT NULL,
+  `medical_history` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `patient_profiles`
+--
+
+INSERT INTO `patient_profiles` (`patient_id`, `user_id`, `full_name`, `date_of_birth`, `gender`, `address`, `phone_number`, `emergency_contact`, `emergency_phone`, `medical_history`) VALUES
+(1, 4, 'Ahmad Hidayat', '1990-05-15', 'M', 'Jl. Merdeka No. 123, Jakarta', '081234567892', 'Sinta Hidayat', '081234567893', 'Riwayat hipertensi keluarga'),
+(2, 5, 'Siti Rahayu', '1985-08-20', 'F', 'Jl. Sudirman No. 45, Bandung', '081234567894', 'Rudi Rahayu', '081234567895', 'Alergi penisilin');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `patient_recommendations`
+--
+
+CREATE TABLE `patient_recommendations` (
+  `patient_recommendation_id` int NOT NULL,
+  `patient_id` int DEFAULT NULL,
+  `recommendation_id` int DEFAULT NULL,
+  `reading_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `patient_recommendations`
+--
+
+INSERT INTO `patient_recommendations` (`patient_recommendation_id`, `patient_id`, `recommendation_id`, `reading_id`, `created_at`) VALUES
+(1, 1, 2, 1, '2025-02-19 22:05:47'),
+(2, 2, 1, 3, '2025-02-19 22:05:47');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `user_id` int NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `role` enum('admin','doctor','patient') NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `role`, `created_at`, `updated_at`) VALUES
+(1, 'admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin@bpm.com', 'admin', '2025-02-19 22:05:47', '2025-02-19 22:05:57'),
+(2, 'dr.budi', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'budi@bpm.com', 'doctor', '2025-02-19 22:05:47', '2025-02-19 22:05:47'),
+(3, 'dr.ani', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'ani@bpm.com', 'doctor', '2025-02-19 22:05:47', '2025-02-19 22:05:47'),
+(4, 'ahmad', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'ahmad@mail.com', 'patient', '2025-02-19 22:05:47', '2025-02-19 22:05:47'),
+(5, 'siti', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'siti@mail.com', 'patient', '2025-02-19 22:05:47', '2025-02-19 22:05:47'),
+(6, 'Drss', '$2y$10$F58mvAXEIiuWMaAOCUI6U.kdTpL9OF9bGF/8F.twdJ6sHXhUTNNau', 'developer@artadev.my.id', 'doctor', '2025-02-20 12:28:39', '2025-02-20 12:28:39'),
+(7, 'safas', '$2y$10$MFqCXujPnRYkj3/HQhbwceg.icUi4EBl/7c41svSG//Rk/hc4duz.', 'trisnanugraha87@gmail.com', 'doctor', '2025-02-20 12:30:22', '2025-02-20 12:30:22');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `blood_pressure_readings`
+--
+ALTER TABLE `blood_pressure_readings`
+  ADD PRIMARY KEY (`reading_id`),
+  ADD KEY `idx_bp_readings_patient_date` (`patient_id`,`reading_date`);
+
+--
+-- Indexes for table `doctor_patients`
+--
+ALTER TABLE `doctor_patients`
+  ADD PRIMARY KEY (`doctor_id`,`patient_id`),
+  ADD KEY `patient_id` (`patient_id`);
+
+--
+-- Indexes for table `doctor_profiles`
+--
+ALTER TABLE `doctor_profiles`
+  ADD PRIMARY KEY (`doctor_id`),
+  ADD UNIQUE KEY `license_number` (`license_number`),
+  ADD UNIQUE KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `health_recommendations`
+--
+ALTER TABLE `health_recommendations`
+  ADD PRIMARY KEY (`recommendation_id`),
+  ADD KEY `created_by` (`created_by`);
+
+--
+-- Indexes for table `medications`
+--
+ALTER TABLE `medications`
+  ADD PRIMARY KEY (`medication_id`),
+  ADD KEY `created_by` (`created_by`);
+
+--
+-- Indexes for table `patient_medications`
+--
+ALTER TABLE `patient_medications`
+  ADD PRIMARY KEY (`patient_medication_id`),
+  ADD KEY `medication_id` (`medication_id`),
+  ADD KEY `prescribed_by` (`prescribed_by`),
+  ADD KEY `idx_patient_meds_patient` (`patient_id`);
+
+--
+-- Indexes for table `patient_profiles`
+--
+ALTER TABLE `patient_profiles`
+  ADD PRIMARY KEY (`patient_id`),
+  ADD UNIQUE KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `patient_recommendations`
+--
+ALTER TABLE `patient_recommendations`
+  ADD PRIMARY KEY (`patient_recommendation_id`),
+  ADD KEY `recommendation_id` (`recommendation_id`),
+  ADD KEY `reading_id` (`reading_id`),
+  ADD KEY `idx_patient_recommendations_patient` (`patient_id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`user_id`),
+  ADD UNIQUE KEY `username` (`username`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `blood_pressure_readings`
+--
+ALTER TABLE `blood_pressure_readings`
+  MODIFY `reading_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `doctor_profiles`
+--
+ALTER TABLE `doctor_profiles`
+  MODIFY `doctor_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `health_recommendations`
+--
+ALTER TABLE `health_recommendations`
+  MODIFY `recommendation_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `medications`
+--
+ALTER TABLE `medications`
+  MODIFY `medication_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `patient_medications`
+--
+ALTER TABLE `patient_medications`
+  MODIFY `patient_medication_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `patient_profiles`
+--
+ALTER TABLE `patient_profiles`
+  MODIFY `patient_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `patient_recommendations`
+--
+ALTER TABLE `patient_recommendations`
+  MODIFY `patient_recommendation_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `blood_pressure_readings`
+--
+ALTER TABLE `blood_pressure_readings`
+  ADD CONSTRAINT `blood_pressure_readings_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient_profiles` (`patient_id`);
+
+--
+-- Constraints for table `doctor_patients`
+--
+ALTER TABLE `doctor_patients`
+  ADD CONSTRAINT `doctor_patients_ibfk_1` FOREIGN KEY (`doctor_id`) REFERENCES `doctor_profiles` (`doctor_id`),
+  ADD CONSTRAINT `doctor_patients_ibfk_2` FOREIGN KEY (`patient_id`) REFERENCES `patient_profiles` (`patient_id`);
+
+--
+-- Constraints for table `doctor_profiles`
+--
+ALTER TABLE `doctor_profiles`
+  ADD CONSTRAINT `doctor_profiles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `health_recommendations`
+--
+ALTER TABLE `health_recommendations`
+  ADD CONSTRAINT `health_recommendations_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `users` (`user_id`);
+
+--
+-- Constraints for table `medications`
+--
+ALTER TABLE `medications`
+  ADD CONSTRAINT `medications_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `users` (`user_id`);
+
+--
+-- Constraints for table `patient_medications`
+--
+ALTER TABLE `patient_medications`
+  ADD CONSTRAINT `patient_medications_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient_profiles` (`patient_id`),
+  ADD CONSTRAINT `patient_medications_ibfk_2` FOREIGN KEY (`medication_id`) REFERENCES `medications` (`medication_id`),
+  ADD CONSTRAINT `patient_medications_ibfk_3` FOREIGN KEY (`prescribed_by`) REFERENCES `doctor_profiles` (`doctor_id`);
+
+--
+-- Constraints for table `patient_profiles`
+--
+ALTER TABLE `patient_profiles`
+  ADD CONSTRAINT `patient_profiles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `patient_recommendations`
+--
+ALTER TABLE `patient_recommendations`
+  ADD CONSTRAINT `patient_recommendations_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient_profiles` (`patient_id`),
+  ADD CONSTRAINT `patient_recommendations_ibfk_2` FOREIGN KEY (`recommendation_id`) REFERENCES `health_recommendations` (`recommendation_id`),
+  ADD CONSTRAINT `patient_recommendations_ibfk_3` FOREIGN KEY (`reading_id`) REFERENCES `blood_pressure_readings` (`reading_id`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
