@@ -91,9 +91,6 @@ $(document).ready(function() {
                             <span class="fs-2 text-muted d-block">
                                 <i class="ti ti-user me-1"></i>${rec.doctor_name}
                             </span>
-                            <span class="fs-2 text-muted">
-                                <i class="ti ti-calendar me-1"></i>${new Date(rec.created_at).toLocaleDateString('id-ID')}
-                            </span>
                         </div>
                     </a>
                 `).join('');
@@ -110,9 +107,6 @@ $(document).ready(function() {
                             <span class="fs-2 text-muted d-block">
                                 <i class="ti ti-user me-1"></i>${pres.doctor_name}
                             </span>
-                            <span class="fs-2 text-muted">
-                                <i class="ti ti-calendar me-1"></i>${new Date(pres.created_at).toLocaleDateString('id-ID')}
-                            </span>
                         </div>
                     </a>
                 `).join('');
@@ -121,7 +115,6 @@ $(document).ready(function() {
         });
     }
 
-    // Initial load and auto refresh
     loadPatientNotifications();
     setInterval(loadPatientNotifications, 30000);
 });

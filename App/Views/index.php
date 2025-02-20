@@ -72,22 +72,22 @@ $auth->checkLoggedIn();
   </div>
   <script src="assets/libs/jquery/dist/jquery.min.js"></script>
   <script src="assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<?php if ($_SESSION['role'] === 'patient'): ?>
-<script>
-$(document).ready(function() {
-    function loadPatientNotifications() {
-        $.ajax({
+  <?php if ($_SESSION['role'] === 'patient'): ?>
+    <script>
+      $(document).ready(function () {
+        function loadPatientNotifications() {
+          $.ajax({
             url: '../Controllers/ajax/NotifikasiPasienAjax.php',
             type: 'POST',
             data: {
-                action: 'getLatestNotifications',
-                user_id: '<?= $_SESSION['user_id'] ?>'
+              action: 'getLatestNotifications',
+              user_id: '<?= $_SESSION['user_id'] ?>'
             },
-            success: function(response) {
-                const data = JSON.parse(response);
-                
-                // Render recommendations
-                const recHtml = data.recommendations.map(rec => `
+            success: function (response) {
+              const data = JSON.parse(response);
+
+              // Render recommendations
+              const recHtml = data.recommendations.map(rec => `
                     <a href="rekomendasi.php" class="message-item d-flex align-items-center border-bottom px-3 py-2">
                         <span class="btn btn-light-info text-info btn-circle">
                             <i class="ti ti-heart-rate-monitor fs-5"></i>
@@ -97,16 +97,13 @@ $(document).ready(function() {
                             <span class="fs-2 text-muted d-block">
                                 <i class="ti ti-user me-1"></i>${rec.doctor_name}
                             </span>
-                            <span class="fs-2 text-muted">
-                                <i class="ti ti-calendar me-1"></i>${new Date(rec.created_at).toLocaleDateString('id-ID')}
-                            </span>
                         </div>
                     </a>
                 `).join('');
-                $('#latest_recommendations').html(recHtml || '<p class="text-center p-3">Tidak ada rekomendasi baru</p>');
+              $('#latest_recommendations').html(recHtml || '<p class="text-center p-3">Tidak ada rekomendasi baru</p>');
 
-                // Render prescriptions
-                const presHtml = data.prescriptions.map(pres => `
+              // Render prescriptions
+              const presHtml = data.prescriptions.map(pres => `
                     <a href="pengobatan.php" class="message-item d-flex align-items-center border-bottom px-3 py-2">
                         <span class="btn btn-light-warning text-warning btn-circle">
                             <i class="ti ti-medicine fs-5"></i>
@@ -116,23 +113,19 @@ $(document).ready(function() {
                             <span class="fs-2 text-muted d-block">
                                 <i class="ti ti-user me-1"></i>${pres.doctor_name}
                             </span>
-                            <span class="fs-2 text-muted">
-                                <i class="ti ti-calendar me-1"></i>${new Date(pres.created_at).toLocaleDateString('id-ID')}
-                            </span>
                         </div>
                     </a>
                 `).join('');
-                $('#latest_prescriptions').html(presHtml || '<p class="text-center p-3">Tidak ada pengobatan baru</p>');
+              $('#latest_prescriptions').html(presHtml || '<p class="text-center p-3">Tidak ada pengobatan baru</p>');
             }
-        });
-    }
+          });
+        }
 
-    // Initial load and auto refresh
-    loadPatientNotifications();
-    setInterval(loadPatientNotifications, 30000);
-});
-</script>
-<?php endif; ?>
+        loadPatientNotifications();
+        setInterval(loadPatientNotifications, 30000);
+      });
+    </script>
+  <?php endif; ?>
 </body>
 
 </html>

@@ -7,7 +7,7 @@
                 </a>
             </li>
             <?php if ($_SESSION['role'] === 'patient'): ?>
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown position-static">
                     <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="notificationDropdown"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="ti ti-bell-ringing"></i>
