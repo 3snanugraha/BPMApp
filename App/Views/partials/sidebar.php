@@ -38,6 +38,7 @@
                     </a>
                 </li>
 
+                <!-- Medis -->
                 <li class="nav-small-cap">
                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                     <span class="hide-menu">Medis</span>
@@ -48,12 +49,14 @@
                         <span class="hide-menu">Pengobatan</span>
                     </a>
                 </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="obat.php" aria-expanded="false">
-                        <span><i class="ti ti-pills"></i></span>
-                        <span class="hide-menu">Obat-obatan</span>
-                    </a>
-                </li>
+                <?php if (in_array($_SESSION['role'], ['admin', 'doctor'])): ?>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="obat.php" aria-expanded="false">
+                            <span><i class="ti ti-pills"></i></span>
+                            <span class="hide-menu">Obat-obatan</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="rekomendasi.php" aria-expanded="false">
                         <span><i class="ti ti-list"></i></span>
@@ -61,22 +64,29 @@
                     </a>
                 </li>
 
-                <li class="nav-small-cap">
-                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                    <span class="hide-menu">Pengguna</span>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="dokter.php" aria-expanded="false">
-                        <span><i class="ti ti-stethoscope"></i></span>
-                        <span class="hide-menu">Dokter</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="pasien.php" aria-expanded="false">
-                        <span><i class="ti ti-users"></i></span>
-                        <span class="hide-menu">Pasien</span>
-                    </a>
-                </li>
+                <!-- Pengguna section -->
+                <?php if (in_array($_SESSION['role'], ['admin', 'doctor'])): ?>
+                    <li class="nav-small-cap">
+                        <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                        <span class="hide-menu">Pengguna</span>
+                    </li>
+
+                    <?php if ($_SESSION['role'] === 'admin'): ?>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="dokter.php" aria-expanded="false">
+                                <span><i class="ti ti-stethoscope"></i></span>
+                                <span class="hide-menu">Dokter</span>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="pasien.php" aria-expanded="false">
+                            <span><i class="ti ti-users"></i></span>
+                            <span class="hide-menu">Pasien</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
 
                 <li class="nav-small-cap">
                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>

@@ -22,6 +22,9 @@ $totalRecommendations = count($recommendations);
     <link rel="stylesheet" href="assets/css/styles.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 </head>
 
 <body>
@@ -42,37 +45,41 @@ $totalRecommendations = count($recommendations);
                                             class="img-fluid">
                                     </div>
                                     <div class="col-lg-6">
-                                        <h3 class="fw-semibold mb-3">Data Rekomendasi</h3>
+                                        <h3 class="fw-semibold mb-3">Rekomendasi Pasien</h3>
                                         <p class="fs-4 mb-4">
-                                            Kelola data rekomendasi kesehatan untuk pasien dalam sistem monitoring.
+                                            Riwayat rekomendasi kesehatan berdasarkan hasil pengukuran tekanan darah
+                                            pasien.
                                             <?php if (in_array($_SESSION['role'], ['admin', 'doctor'])): ?>
-                                                Anda dapat menambah, mengubah, dan menghapus data rekomendasi.
+                                                Anda dapat memberikan rekomendasi kesehatan untuk setiap hasil pengukuran.
                                             <?php endif; ?>
                                         </p>
 
                                         <div class="card bg-primary text-white mb-4">
                                             <div class="card-body d-flex align-items-center">
-                                                <i class="ti ti-list fs-6 me-3"></i>
+                                                <i class="ti ti-heart-rate-monitor fs-6 me-3"></i>
                                                 <div>
                                                     <h2 class="text-white mb-0"><?= $totalRecommendations ?></h2>
-                                                    <p class="mb-0">Total Rekomendasi Terdaftar</p>
+                                                    <p class="mb-0">Total Rekomendasi Diberikan</p>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <?php if (in_array($_SESSION['role'], ['admin', 'doctor'])): ?>
-                                            <button class="btn btn-primary d-flex align-items-center" data-bs-toggle="modal"
-                                                data-bs-target="#addRecommendationModal">
+                                            <button type="button" class="btn btn-primary d-flex align-items-center"
+                                                data-bs-toggle="modal" data-bs-target="#addRecommendationModal"
+                                                style="width: fit-content;">
                                                 <i class="ti ti-plus fs-5 me-2"></i>
-                                                <span>Tambah Data Rekomendasi</span>
+                                                <span>Berikan Rekomendasi</span>
                                             </button>
                                         <?php endif; ?>
+
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <!-- End Information Section -->
 
                 <!-- Recommendations Table Section -->
                 <div class="row">
@@ -84,11 +91,12 @@ $totalRecommendations = count($recommendations);
                                         class="table table-striped dt-responsive nowrap w-100">
                                         <thead>
                                             <tr>
+                                                <th>Pasien</th>
+                                                <th>Pengukuran</th>
                                                 <th>Judul</th>
                                                 <th>Deskripsi</th>
-                                                <th>Total Pasien</th>
                                                 <th>Dibuat Oleh</th>
-                                                <th>Tanggal Dibuat</th>
+                                                <th>Tanggal</th>
                                                 <?php if (in_array($_SESSION['role'], ['admin', 'doctor'])): ?>
                                                     <th>Aksi</th>
                                                 <?php endif; ?>
@@ -97,10 +105,18 @@ $totalRecommendations = count($recommendations);
                                         <tbody>
                                             <?php foreach ($recommendations as $recommendation): ?>
                                                 <tr>
-                                                    <td><?= htmlspecialchars($recommendation['title']) ?></td>
-                                                    <td><?= htmlspecialchars(substr($recommendation['description'], 0, 50)) . '...' ?>
+                                                    <td><?= htmlspecialchars($recommendation['patient_name']) ?></td>
+                                                    <td>
+                                                        <?= $recommendation['systolic'] ?>/<?= $recommendation['diastolic'] ?>
+                                                        mmHg
+                                                        <br>
+                                                        <small class="text-muted">
+                                                            <?= date('d/m/Y H:i', strtotime($recommendation['reading_date'])) ?>
+                                                        </small>
                                                     </td>
-                                                    <td><?= $recommendation['total_patients'] ?> Pasien</td>
+                                                    <td><?= htmlspecialchars($recommendation['title']) ?></td>
+                                                    <td><?= htmlspecialchars(substr($recommendation['description'], 0, 50)) ?>...
+                                                    </td>
                                                     <td><?= htmlspecialchars($recommendation['created_by_name']) ?></td>
                                                     <td><?= date('d/m/Y H:i', strtotime($recommendation['created_at'])) ?>
                                                     </td>
@@ -118,7 +134,7 @@ $totalRecommendations = count($recommendations);
                                                             </button>
                                                             <button type="button"
                                                                 class="btn btn-danger btn-sm delete-recommendation"
-                                                                data-id="<?= $recommendation['recommendation_id'] ?>">
+                                                                data-id="<?= $recommendation['patient_recommendation_id'] ?>">
                                                                 <i class="ti ti-trash"></i>
                                                             </button>
                                                         </td>
@@ -132,6 +148,7 @@ $totalRecommendations = count($recommendations);
                         </div>
                     </div>
                 </div>
+                <!-- End Recommendations Table Section -->
 
                 <?php include 'partials/footer.php'; ?>
                 <?php include 'partials/rekomendasi-modals.php'; ?>
@@ -148,46 +165,224 @@ $totalRecommendations = count($recommendations);
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
+
+        // View recommendation
+        $(document).on('click', '.view-recommendation', function () {
+            const recommendation = $(this).data('recommendation');
+            $('#view_reading_systolic').text(recommendation.systolic);
+            $('#view_reading_diastolic').text(recommendation.diastolic);
+            $('#view_reading_date').text(new Date(recommendation.reading_date).toLocaleString('id-ID'));
+            $('#view_title').text(recommendation.title);
+            $('#view_description').text(recommendation.description);
+            $('#view_created_by').text(recommendation.created_by_name);
+            $('#view_created_at').text(new Date(recommendation.created_at).toLocaleString('id-ID'));
+            $('#viewRecommendationModal').modal('show');
+        });
+
+        // Edit recommendation
+        $(document).on('click', '.edit-recommendation', function () {
+            const recommendation = $(this).data('recommendation');
+            $('#edit_recommendation_id').val(recommendation.patient_recommendation_id);
+            $('#edit_reading_systolic').text(recommendation.systolic);
+            $('#edit_reading_diastolic').text(recommendation.diastolic);
+            $('#edit_reading_date').text(new Date(recommendation.reading_date).toLocaleString('id-ID'));
+            $('#edit_title').val(recommendation.title);
+            $('#edit_description').val(recommendation.description);
+            $('#editRecommendationModal').modal('show');
+        });
+
+        // Delete recommendation
+        $(document).on('click', '.delete-recommendation', function () {
+            if (confirm('Apakah Anda yakin ingin menghapus rekomendasi ini?')) {
+                const recommendationId = $(this).data('id');
+                const form = $('<form>', {
+                    'method': 'POST',
+                    'action': '../Controllers/RekomendasiController.php'
+                });
+
+                form.append($('<input>', {
+                    'type': 'hidden',
+                    'name': 'action',
+                    'value': 'delete_recommendation'
+                }));
+
+                form.append($('<input>', {
+                    'type': 'hidden',
+                    'name': 'recommendation_id',
+                    'value': recommendationId
+                }));
+
+                $('body').append(form);
+                form.submit();
+            }
+        });
+
         $(document).ready(function () {
             var table = $('#recommendationTable').DataTable({
                 responsive: true,
                 language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
+                    url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
                 }
             });
 
-            $(document).on('click', '.view-recommendation', function () {
-                var recommendation = JSON.parse($(this).attr('data-recommendation'));
-                $('#view_title').text(recommendation.title);
-                $('#view_description').text(recommendation.description);
-                $('#view_created_by').text(recommendation.created_by_name);
-                $('#view_created_at').text(new Date(recommendation.created_at).toLocaleString('id-ID'));
-                $('#view_total_patients').text(recommendation.total_patients + ' Pasien');
-                $('#viewRecommendationModal').modal('show');
+            // Initialize Select2
+            $('#patient_selector').select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#addRecommendationModal'),
+                ajax: {
+                    url: '../Controllers/ajax/RekomendasiAjax.php',
+                    type: 'POST',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            action: 'getPatients',
+                            search: params.term
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.map(function (item) {
+                                return {
+                                    id: item.patient_id,
+                                    text: item.full_name
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: 'Pilih pasien...',
+                allowClear: true
             });
 
-            $(document).on('click', '.edit-recommendation', function () {
-                var recommendation = JSON.parse($(this).attr('data-recommendation'));
-                $('#edit_recommendation_id').val(recommendation.recommendation_id);
-                $('#edit_title').val(recommendation.title);
-                $('#edit_description').val(recommendation.description);
-                $('#editRecommendationModal').modal('show');
-            });
 
-            $(document).on('click', '.delete-recommendation', function () {
-                if (confirm('Apakah Anda yakin ingin menghapus rekomendasi ini?')) {
-                    var form = $('<form action="../Controllers/RekomendasiController.php" method="POST">' +
-                        '<input type="hidden" name="action" value="delete_recommendation">' +
-                        '<input type="hidden" name="recommendation_id" value="' + $(this).data('id') + '">' +
-                        '</form>');
-                    $('body').append(form);
-                    form.submit();
+            // Handle patient selection
+            $('#patient_selector').on('change', function () {
+                const patientId = $(this).val();
+                if (patientId) {
+                    $.ajax({
+                        url: '../Controllers/ajax/RekomendasiAjax.php',
+                        type: 'POST',
+                        data: {
+                            action: 'getPatientReadings',
+                            patient_id: patientId
+                        },
+                        success: function (response) {
+                            const readings = JSON.parse(response);
+                            displayReadings(readings);
+                            $('#readings_section').show();
+                            $('#addRecommendationForm').hide();
+                        }
+                    });
+                } else {
+                    $('#readings_section, #addRecommendationForm').hide();
                 }
             });
+
+            // Handle reading selection
+            $(document).on('change', '.reading-selector', function () {
+                const reading = $(this).data('reading');
+
+                $('#selected_patient_id').val($('#patient_selector').val());
+                $('#selected_reading_id').val(reading.reading_id);
+
+                $('#selected_reading_info').html(`
+            <strong>Tanggal:</strong> ${new Date(reading.reading_date).toLocaleString('id-ID')}<br>
+            <strong>Tekanan Darah:</strong> ${reading.systolic}/${reading.diastolic} mmHg<br>
+            <strong>Pulse Rate:</strong> ${reading.pulse_rate} bpm<br>
+            <strong>Catatan:</strong> ${reading.notes || '-'}
+        `);
+
+                $('#addRecommendationForm').show();
+            });
+
+            function displayReadings(readings) {
+                let html = '';
+                readings.forEach(reading => {
+                    html += `
+                <tr>
+                    <td class="text-center">
+                        <input type="radio" name="reading_selection" class="reading-selector" 
+                               data-reading='${JSON.stringify(reading)}'>
+                    </td>
+                    <td>${new Date(reading.reading_date).toLocaleString('id-ID')}</td>
+                    <td>${reading.systolic}</td>
+                    <td>${reading.diastolic}</td>
+                    <td>${reading.pulse_rate}</td>
+                    <td>${reading.notes || '-'}</td>
+                </tr>
+            `;
+                });
+                $('#readings_table_body').html(html);
+            }
         });
     </script>
+
+<?php if ($_SESSION['role'] === 'patient'): ?>
+<script>
+$(document).ready(function() {
+    function loadPatientNotifications() {
+        $.ajax({
+            url: '../Controllers/ajax/NotifikasiPasienAjax.php',
+            type: 'POST',
+            data: {
+                action: 'getLatestNotifications',
+                user_id: '<?= $_SESSION['user_id'] ?>'
+            },
+            success: function(response) {
+                const data = JSON.parse(response);
+                
+                // Render recommendations
+                const recHtml = data.recommendations.map(rec => `
+                    <a href="rekomendasi.php" class="message-item d-flex align-items-center border-bottom px-3 py-2">
+                        <span class="btn btn-light-info text-info btn-circle">
+                            <i class="ti ti-heart-rate-monitor fs-5"></i>
+                        </span>
+                        <div class="w-75 d-inline-block v-middle ps-3">
+                            <h6 class="mb-1 fw-semibold">${rec.title}</h6>
+                            <span class="fs-2 text-muted d-block">
+                                <i class="ti ti-user me-1"></i>${rec.doctor_name}
+                            </span>
+                            <span class="fs-2 text-muted">
+                                <i class="ti ti-calendar me-1"></i>${new Date(rec.created_at).toLocaleDateString('id-ID')}
+                            </span>
+                        </div>
+                    </a>
+                `).join('');
+                $('#latest_recommendations').html(recHtml || '<p class="text-center p-3">Tidak ada rekomendasi baru</p>');
+
+                // Render prescriptions
+                const presHtml = data.prescriptions.map(pres => `
+                    <a href="pengobatan.php" class="message-item d-flex align-items-center border-bottom px-3 py-2">
+                        <span class="btn btn-light-warning text-warning btn-circle">
+                            <i class="ti ti-medicine fs-5"></i>
+                        </span>
+                        <div class="w-75 d-inline-block v-middle ps-3">
+                            <h6 class="mb-1 fw-semibold">${pres.medication_name}</h6>
+                            <span class="fs-2 text-muted d-block">
+                                <i class="ti ti-user me-1"></i>${pres.doctor_name}
+                            </span>
+                            <span class="fs-2 text-muted">
+                                <i class="ti ti-calendar me-1"></i>${new Date(pres.created_at).toLocaleDateString('id-ID')}
+                            </span>
+                        </div>
+                    </a>
+                `).join('');
+                $('#latest_prescriptions').html(presHtml || '<p class="text-center p-3">Tidak ada pengobatan baru</p>');
+            }
+        });
+    }
+
+    // Initial load and auto refresh
+    loadPatientNotifications();
+    setInterval(loadPatientNotifications, 30000);
+});
+</script>
+<?php endif; ?>
 </body>
 
 </html>

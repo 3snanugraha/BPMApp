@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../Config/Database.php';
 class RekomendasiModel
 {
     private $db;
@@ -44,18 +45,18 @@ class RekomendasiModel
     }
 
     // For Patient: Get their recommendations with reading context
-    public function getPatientRecommendations($patientId)
+    public function getPatientRecommendations($userId)
     {
-        $query = "SELECT pr.created_at, pr.title, pr.description,
-                         bpr.systolic, bpr.diastolic, bpr.reading_date,
-                         CONCAT(dp.full_name, ' (', u.username, ')') as recommended_by
+        $query = "SELECT pr.*, u.username as created_by_name,
+                  pp.full_name as patient_name,
+                  bpr.systolic, bpr.diastolic, bpr.reading_date
                   FROM patient_recommendations pr
-                  JOIN blood_pressure_readings bpr ON pr.reading_id = bpr.reading_id
                   JOIN users u ON pr.created_by = u.user_id
-                  LEFT JOIN doctor_profiles dp ON u.user_id = dp.user_id
-                  WHERE pr.patient_id = ?
+                  JOIN patient_profiles pp ON pr.patient_id = pp.patient_id
+                  JOIN blood_pressure_readings bpr ON pr.reading_id = bpr.reading_id
+                  WHERE pp.user_id = ?
                   ORDER BY pr.created_at DESC";
-        return $this->db->query($query, [$patientId])->fetchAll();
+        return $this->db->query($query, [$userId])->fetchAll();
     }
 
     // For Admin/Doctor: Get recommendation details

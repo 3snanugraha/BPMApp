@@ -153,41 +153,126 @@ $totalMedications = count($medications);
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
 
     <script>
+
+        // View medication details
+        $(document).on('click', '.view-medication', function () {
+            const medication = $(this).data('medication');
+            $('#view_name').text(medication.name);
+            $('#view_dosage_form').text(medication.dosage_form);
+            $('#view_description').text(medication.description);
+            $('#view_created_by').text(medication.created_by_name);
+            $('#view_created_at').text(new Date(medication.created_at).toLocaleString('id-ID'));
+            $('#viewMedicationModal').modal('show');
+        });
+
+        // Edit medication
+        $(document).on('click', '.edit-medication', function () {
+            const medication = $(this).data('medication');
+            $('#edit_medication_id').val(medication.medication_id);
+            $('#edit_name').val(medication.name);
+            $('#edit_dosage_form').val(medication.dosage_form);
+            $('#edit_description').val(medication.description);
+            $('#editMedicationModal').modal('show');
+        });
+
+        // Delete medication
+        $(document).on('click', '.delete-medication', function () {
+            if (confirm('Apakah Anda yakin ingin menghapus obat ini?')) {
+                const medicationId = $(this).data('id');
+                const form = $('<form>', {
+                    'method': 'POST',
+                    'action': '../Controllers/ObatObatanController.php'
+                });
+
+                form.append($('<input>', {
+                    'type': 'hidden',
+                    'name': 'action',
+                    'value': 'delete_medication'
+                }));
+
+                form.append($('<input>', {
+                    'type': 'hidden',
+                    'name': 'medication_id',
+                    'value': medicationId
+                }));
+
+                $('body').append(form);
+                form.submit();
+            }
+        });
+
+
         $(document).ready(function () {
             // Initialize DataTable
             var table = $('#medicationTable').DataTable({
                 responsive: true,
                 language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
+                    url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
                 }
-            });
-
-            // Handle View Medication
-            $('.view-medication').on('click', function () {
-                var medication = $(this).data('medication');
-                $('#view_name').text(medication.name);
-                $('#view_dosage_form').text(medication.dosage_form);
-                $('#view_description').text(medication.description);
-                $('#view_created_by').text(medication.created_by_name);
-                $('#view_created_at').text(medication.created_at);
-            });
-
-            // Handle Edit Medication
-            $('.edit-medication').on('click', function () {
-                var medication = $(this).data('medication');
-                $('#edit_medication_id').val(medication.medication_id);
-                $('#edit_name').val(medication.name);
-                $('#edit_dosage_form').val(medication.dosage_form);
-                $('#edit_description').val(medication.description);
-            });
-
-            // Handle Delete Medication
-            $('.delete-medication').on('click', function () {
-                var medicationId = $(this).data('id');
-                $('#delete_medication_id').val(medicationId);
             });
         });
     </script>
+<?php if ($_SESSION['role'] === 'patient'): ?>
+<script>
+$(document).ready(function() {
+    function loadPatientNotifications() {
+        $.ajax({
+            url: '../Controllers/ajax/NotifikasiPasienAjax.php',
+            type: 'POST',
+            data: {
+                action: 'getLatestNotifications',
+                user_id: '<?= $_SESSION['user_id'] ?>'
+            },
+            success: function(response) {
+                const data = JSON.parse(response);
+                
+                // Render recommendations
+                const recHtml = data.recommendations.map(rec => `
+                    <a href="rekomendasi.php" class="message-item d-flex align-items-center border-bottom px-3 py-2">
+                        <span class="btn btn-light-info text-info btn-circle">
+                            <i class="ti ti-heart-rate-monitor fs-5"></i>
+                        </span>
+                        <div class="w-75 d-inline-block v-middle ps-3">
+                            <h6 class="mb-1 fw-semibold">${rec.title}</h6>
+                            <span class="fs-2 text-muted d-block">
+                                <i class="ti ti-user me-1"></i>${rec.doctor_name}
+                            </span>
+                            <span class="fs-2 text-muted">
+                                <i class="ti ti-calendar me-1"></i>${new Date(rec.created_at).toLocaleDateString('id-ID')}
+                            </span>
+                        </div>
+                    </a>
+                `).join('');
+                $('#latest_recommendations').html(recHtml || '<p class="text-center p-3">Tidak ada rekomendasi baru</p>');
+
+                // Render prescriptions
+                const presHtml = data.prescriptions.map(pres => `
+                    <a href="pengobatan.php" class="message-item d-flex align-items-center border-bottom px-3 py-2">
+                        <span class="btn btn-light-warning text-warning btn-circle">
+                            <i class="ti ti-medicine fs-5"></i>
+                        </span>
+                        <div class="w-75 d-inline-block v-middle ps-3">
+                            <h6 class="mb-1 fw-semibold">${pres.medication_name}</h6>
+                            <span class="fs-2 text-muted d-block">
+                                <i class="ti ti-user me-1"></i>${pres.doctor_name}
+                            </span>
+                            <span class="fs-2 text-muted">
+                                <i class="ti ti-calendar me-1"></i>${new Date(pres.created_at).toLocaleDateString('id-ID')}
+                            </span>
+                        </div>
+                    </a>
+                `).join('');
+                $('#latest_prescriptions').html(presHtml || '<p class="text-center p-3">Tidak ada pengobatan baru</p>');
+            }
+        });
+    }
+
+    // Initial load and auto refresh
+    loadPatientNotifications();
+    setInterval(loadPatientNotifications, 30000);
+});
+</script>
+<?php endif; ?>
 </body>
 
 </html>

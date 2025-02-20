@@ -6,32 +6,37 @@
                     <i class="ti ti-menu-2"></i>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link nav-icon-hover" href="./notifications">
-                    <i class="ti ti-bell-ringing"></i>
-                    <div class="notification bg-primary rounded-circle"></div>
-                </a>
-            </li>
+            <?php if ($_SESSION['role'] === 'patient'): ?>
+                <li class="nav-item dropdown">
+                    <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="notificationDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="ti ti-bell-ringing"></i>
+                        <div class="notification bg-primary rounded-circle"></div>
+                    </a>
+                    <?php include 'notification.php'; ?>
+                </li>
+            <?php endif; ?>
         </ul>
         <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
             <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
                 <li class="nav-item dropdown">
-                    <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+                    <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="profileDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                         <img src="assets/images/profile/user-1.jpg" alt="" width="35" height="35"
                             class="rounded-circle">
                     </a>
-                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
+                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up"
+                        aria-labelledby="profileDropdown">
                         <div class="message-body">
-                            <a href="./profile" class="d-flex align-items-center gap-2 dropdown-item">
+                            <a href="profil.php" class="d-flex align-items-center gap-2 dropdown-item">
                                 <i class="ti ti-user fs-6"></i>
                                 <p class="mb-0 fs-3">Profil Saya</p>
                             </a>
-                            <a href="./medical-records" class="d-flex align-items-center gap-2 dropdown-item">
+                            <a href="#" class="d-flex align-items-center gap-2 dropdown-item">
                                 <i class="ti ti-heart fs-6"></i>
                                 <p class="mb-0 fs-3">Rekam Medis</p>
                             </a>
-                            <a href="./bp-readings" class="d-flex align-items-center gap-2 dropdown-item">
+                            <a href="pencatatan.php" class="d-flex align-items-center gap-2 dropdown-item">
                                 <i class="ti ti-heart fs-6"></i>
                                 <p class="mb-0 fs-3">Data Tekanan Darah</p>
                             </a>

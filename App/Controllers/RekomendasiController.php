@@ -27,25 +27,17 @@ class RekomendasiController
             case 'delete_recommendation':
                 $this->handleDeleteRecommendation();
                 break;
-            case 'assign_recommendation':
-                $this->handleAssignRecommendation();
-                break;
             default:
                 header('Location: ../Views/rekomendasi.php');
                 exit();
         }
     }
 
-    // Admin/Doctor: Add new recommendation
     private function handleAddRecommendation()
     {
-        if (!in_array($_SESSION['role'], ['admin', 'doctor'])) {
-            $_SESSION['error'] = 'Unauthorized access';
-            header('Location: ../Views/dashboard.php');
-            exit();
-        }
-
         $recommendationData = [
+            'patient_id' => $_POST['patient_id'],
+            'reading_id' => $_POST['reading_id'],
             'title' => $_POST['title'],
             'description' => $_POST['description'],
             'created_by' => $_SESSION['user_id']
@@ -61,7 +53,6 @@ class RekomendasiController
         exit();
     }
 
-    // Admin/Doctor: Edit existing recommendation
     private function handleEditRecommendation()
     {
         if (!in_array($_SESSION['role'], ['admin', 'doctor'])) {
@@ -86,7 +77,6 @@ class RekomendasiController
         exit();
     }
 
-    // Admin/Doctor: Delete recommendation
     private function handleDeleteRecommendation()
     {
         if (!in_array($_SESSION['role'], ['admin', 'doctor'])) {
@@ -107,38 +97,13 @@ class RekomendasiController
         exit();
     }
 
-    // Admin/Doctor: Assign recommendation to patient
-    private function handleAssignRecommendation()
-    {
-        if (!in_array($_SESSION['role'], ['admin', 'doctor'])) {
-            $_SESSION['error'] = 'Unauthorized access';
-            header('Location: ../Views/dashboard.php');
-            exit();
-        }
-
-        $patientRecommendationData = [
-            'patient_id' => $_POST['patient_id'],
-            'recommendation_id' => $_POST['recommendation_id'],
-            'reading_id' => $_POST['reading_id']
-        ];
-
-        if ($this->rekomendasiModel->addPatientRecommendation($patientRecommendationData)) {
-            $_SESSION['success'] = 'Rekomendasi berhasil diberikan ke pasien';
-        } else {
-            $_SESSION['error'] = 'Gagal memberikan rekomendasi ke pasien';
-        }
-
-        header('Location: ../Views/pasien/detail.php?id=' . $_POST['patient_id']);
-        exit();
-    }
-
     // Public methods for view data
     public function getAllRecommendations()
     {
-        if (in_array($_SESSION['role'], ['admin', 'doctor'])) {
-            return $this->rekomendasiModel->getAllRecommendations();
+        if ($_SESSION['role'] === 'patient') {
+            return $this->rekomendasiModel->getPatientRecommendations($_SESSION['user_id']);
         }
-        return [];
+        return $this->rekomendasiModel->getAllRecommendations();
     }
 
     public function getRecommendationById($recommendationId)
@@ -166,7 +131,6 @@ class RekomendasiController
     }
 }
 
-// Handle incoming requests
 if (isset($_POST['action'])) {
     $controller = new RekomendasiController();
     $controller->handleRequest();
