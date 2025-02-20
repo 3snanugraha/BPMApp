@@ -10,6 +10,101 @@ class PasienModel
         $this->db = new Database();
     }
 
+
+    public function addReading($data)
+    {
+        $query = "INSERT INTO blood_pressure_readings 
+                  (patient_id, systolic, diastolic, pulse_rate, notes) 
+                  VALUES (?, ?, ?, ?, ?)";
+
+        $this->db->query($query, [
+            $data['patient_id'],
+            $data['systolic'],
+            $data['diastolic'],
+            $data['pulse_rate'],
+            $data['notes']
+        ]);
+
+        $readingId = $this->db->lastInsertId();
+
+        // Check if recommendation needed
+        $recommendation = $this->getRecommendationForReading($data['systolic'], $data['diastolic']);
+        if ($recommendation) {
+            $this->addRecommendationForReading($readingId, $data['patient_id'], $recommendation['recommendation_id']);
+        }
+
+        return $readingId;
+    }
+
+    // Add these methods to the PasienModel class
+
+    public function getRecommendationForReading($systolic, $diastolic)
+    {
+        $query = "SELECT * FROM health_recommendations 
+              WHERE bp_range_systolic_min <= ? 
+              AND bp_range_systolic_max >= ?
+              AND bp_range_diastolic_min <= ?
+              AND bp_range_diastolic_max >= ?
+              LIMIT 1";
+
+        return $this->db->query($query, [
+            $systolic,
+            $systolic,
+            $diastolic,
+            $diastolic
+        ])->fetch();
+    }
+
+    public function addRecommendationForReading($readingId, $patientId, $recommendationId)
+    {
+        $query = "INSERT INTO patient_recommendations 
+              (patient_id, recommendation_id, reading_id) 
+              VALUES (?, ?, ?)";
+
+        return $this->db->query($query, [
+            $patientId,
+            $recommendationId,
+            $readingId
+        ]);
+    }
+
+
+    public function getAllTodayReadings()
+    {
+        $query = "SELECT bpr.*, pp.full_name as patient_name 
+                  FROM blood_pressure_readings bpr
+                  JOIN patient_profiles pp ON bpr.patient_id = pp.patient_id 
+                  WHERE DATE(bpr.reading_date) = CURDATE()
+                  ORDER BY bpr.reading_date DESC";
+
+        return $this->db->query($query)->fetchAll();
+    }
+
+    public function getTodayReadings($patientId)
+    {
+        $query = "SELECT * FROM blood_pressure_readings 
+                  WHERE patient_id = ? 
+                  AND DATE(reading_date) = CURDATE()
+                  ORDER BY reading_date DESC";
+
+        return $this->db->query($query, [$patientId])->fetchAll();
+    }
+
+    public function getLatestReading($patientId)
+    {
+        $query = "SELECT bpr.*, 
+                         hr.title as recommendation_title,
+                         hr.description as recommendation_description
+                  FROM blood_pressure_readings bpr
+                  LEFT JOIN patient_recommendations pr ON bpr.reading_id = pr.reading_id
+                  LEFT JOIN health_recommendations hr ON pr.recommendation_id = hr.recommendation_id
+                  WHERE bpr.patient_id = ?
+                  ORDER BY bpr.reading_date DESC
+                  LIMIT 1";
+
+        return $this->db->query($query, [$patientId])->fetch();
+    }
+
     public function getAllPatients()
     {
         $query = "SELECT p.*, u.email, u.username 
