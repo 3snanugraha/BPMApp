@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 20, 2025 at 01:18 PM
+-- Generation Time: Feb 20, 2025 at 08:09 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -93,33 +93,6 @@ INSERT INTO `doctor_profiles` (`doctor_id`, `user_id`, `full_name`, `specializat
 -- --------------------------------------------------------
 
 --
--- Table structure for table `health_recommendations`
---
-
-CREATE TABLE `health_recommendations` (
-  `recommendation_id` int NOT NULL,
-  `title` varchar(100) NOT NULL,
-  `description` text NOT NULL,
-  `bp_range_systolic_min` int DEFAULT NULL,
-  `bp_range_systolic_max` int DEFAULT NULL,
-  `bp_range_diastolic_min` int DEFAULT NULL,
-  `bp_range_diastolic_max` int DEFAULT NULL,
-  `created_by` int DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `health_recommendations`
---
-
-INSERT INTO `health_recommendations` (`recommendation_id`, `title`, `description`, `bp_range_systolic_min`, `bp_range_systolic_max`, `bp_range_diastolic_min`, `bp_range_diastolic_max`, `created_by`, `created_at`) VALUES
-(1, 'Tekanan Darah Normal', 'Pertahankan pola hidup sehat dengan diet seimbang dan olahraga teratur', 90, 120, 60, 80, 1, '2025-02-19 22:05:47'),
-(2, 'Prehipertensi', 'Kurangi asupan garam, tingkatkan aktivitas fisik, hindari stres', 120, 140, 80, 90, 1, '2025-02-19 22:05:47'),
-(3, 'Hipertensi', 'Konsultasi dengan dokter, ikuti pengobatan yang diresepkan, pantau tekanan darah secara teratur', 140, 180, 90, 120, 1, '2025-02-19 22:05:47');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `medications`
 --
 
@@ -203,8 +176,10 @@ INSERT INTO `patient_profiles` (`patient_id`, `user_id`, `full_name`, `date_of_b
 CREATE TABLE `patient_recommendations` (
   `patient_recommendation_id` int NOT NULL,
   `patient_id` int DEFAULT NULL,
-  `recommendation_id` int DEFAULT NULL,
   `reading_id` int DEFAULT NULL,
+  `title` varchar(100) NOT NULL,
+  `description` text NOT NULL,
+  `created_by` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -212,9 +187,11 @@ CREATE TABLE `patient_recommendations` (
 -- Dumping data for table `patient_recommendations`
 --
 
-INSERT INTO `patient_recommendations` (`patient_recommendation_id`, `patient_id`, `recommendation_id`, `reading_id`, `created_at`) VALUES
-(1, 1, 2, 1, '2025-02-19 22:05:47'),
-(2, 2, 1, 3, '2025-02-19 22:05:47');
+INSERT INTO `patient_recommendations` (`patient_recommendation_id`, `patient_id`, `reading_id`, `title`, `description`, `created_by`, `created_at`) VALUES
+(1, 1, 1, 'Prehipertensi - Perlu Perhatian', 'Tekanan darah Anda sedikit tinggi. Disarankan untuk:\n- Kurangi asupan garam\n- Tingkatkan aktivitas fisik\n- Hindari stres berlebih\n- Pantau tekanan darah secara rutin', 2, '2025-02-19 15:05:47'),
+(2, 1, 2, 'Evaluasi Pasca Olahraga', 'Tekanan darah pasca olahraga menunjukkan respon normal. Rekomendasi:\n- Pertahankan rutinitas olahraga\n- Istirahat cukup\n- Jaga hidrasi\n- Lakukan pendinginan setelah olahraga', 2, '2025-02-19 15:05:47'),
+(3, 2, 3, 'Tekanan Darah Normal', 'Hasil pemeriksaan menunjukkan tekanan darah normal. Saran:\n- Pertahankan pola makan sehat\n- Lanjutkan aktivitas fisik teratur\n- Jaga kualitas tidur\n- Lakukan pemeriksaan rutin', 3, '2025-02-19 15:05:47'),
+(4, 2, 4, 'Kondisi Optimal', 'Tekanan darah dalam kondisi optimal. Rekomendasi:\n- Pertahankan gaya hidup sehat\n- Konsumsi makanan seimbang\n- Kelola stres dengan baik\n- Rutin check-up kesehatan', 3, '2025-02-19 15:05:47');
 
 -- --------------------------------------------------------
 
@@ -272,13 +249,6 @@ ALTER TABLE `doctor_profiles`
   ADD UNIQUE KEY `user_id` (`user_id`);
 
 --
--- Indexes for table `health_recommendations`
---
-ALTER TABLE `health_recommendations`
-  ADD PRIMARY KEY (`recommendation_id`),
-  ADD KEY `created_by` (`created_by`);
-
---
 -- Indexes for table `medications`
 --
 ALTER TABLE `medications`
@@ -306,9 +276,9 @@ ALTER TABLE `patient_profiles`
 --
 ALTER TABLE `patient_recommendations`
   ADD PRIMARY KEY (`patient_recommendation_id`),
-  ADD KEY `recommendation_id` (`recommendation_id`),
   ADD KEY `reading_id` (`reading_id`),
-  ADD KEY `idx_patient_recommendations_patient` (`patient_id`);
+  ADD KEY `idx_patient_recommendations_patient` (`patient_id`),
+  ADD KEY `created_by` (`created_by`);
 
 --
 -- Indexes for table `users`
@@ -326,19 +296,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `blood_pressure_readings`
 --
 ALTER TABLE `blood_pressure_readings`
-  MODIFY `reading_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `reading_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `doctor_profiles`
 --
 ALTER TABLE `doctor_profiles`
   MODIFY `doctor_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `health_recommendations`
---
-ALTER TABLE `health_recommendations`
-  MODIFY `recommendation_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `medications`
@@ -362,7 +326,7 @@ ALTER TABLE `patient_profiles`
 -- AUTO_INCREMENT for table `patient_recommendations`
 --
 ALTER TABLE `patient_recommendations`
-  MODIFY `patient_recommendation_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `patient_recommendation_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -394,12 +358,6 @@ ALTER TABLE `doctor_profiles`
   ADD CONSTRAINT `doctor_profiles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `health_recommendations`
---
-ALTER TABLE `health_recommendations`
-  ADD CONSTRAINT `health_recommendations_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `users` (`user_id`);
-
---
 -- Constraints for table `medications`
 --
 ALTER TABLE `medications`
@@ -424,8 +382,8 @@ ALTER TABLE `patient_profiles`
 --
 ALTER TABLE `patient_recommendations`
   ADD CONSTRAINT `patient_recommendations_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient_profiles` (`patient_id`),
-  ADD CONSTRAINT `patient_recommendations_ibfk_2` FOREIGN KEY (`recommendation_id`) REFERENCES `health_recommendations` (`recommendation_id`),
-  ADD CONSTRAINT `patient_recommendations_ibfk_3` FOREIGN KEY (`reading_id`) REFERENCES `blood_pressure_readings` (`reading_id`);
+  ADD CONSTRAINT `patient_recommendations_ibfk_3` FOREIGN KEY (`reading_id`) REFERENCES `blood_pressure_readings` (`reading_id`),
+  ADD CONSTRAINT `patient_recommendations_ibfk_4` FOREIGN KEY (`created_by`) REFERENCES `users` (`user_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

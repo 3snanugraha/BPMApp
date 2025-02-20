@@ -10,22 +10,6 @@ $auth = new AuthController();
 $auth->checkAuth(); // Redirect to login if not authenticated
 
 $userRole = $_SESSION['role'];
-
-// Initialize controllers based on role
-$pasienController = new PasienController();
-$dokterController = new DokterController();
-$pencatatanController = new PencatatanController();
-
-// Get common statistics
-$totalPatients = count($pasienController->getAllPatients());
-$totalDoctors = count($dokterController->getAllDoctors());
-$todayReadings = count($pencatatanController->getTodayReadings());
-$abnormalCases = count($pencatatanController->getAbnormalReadings());
-
-// Get role-specific data
-$doctors = $dokterController->getAllDoctors();
-$recentPatients = $pasienController->getRecentPatients(5);
-$readingTrends = $pencatatanController->getReadingTrend(30);
 ?>
 
 <!doctype html>

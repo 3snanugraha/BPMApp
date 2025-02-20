@@ -43,6 +43,12 @@
                     <span class="hide-menu">Medis</span>
                 </li>
                 <li class="sidebar-item">
+                    <a class="sidebar-link" href="pengobatan.php" aria-expanded="false">
+                        <span><i class="ti ti-heart"></i></span>
+                        <span class="hide-menu">Pengobatan</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
                     <a class="sidebar-link" href="obat.php" aria-expanded="false">
                         <span><i class="ti ti-pills"></i></span>
                         <span class="hide-menu">Obat-obatan</span>

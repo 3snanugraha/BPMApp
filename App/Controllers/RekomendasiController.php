@@ -36,15 +36,18 @@ class RekomendasiController
         }
     }
 
+    // Admin/Doctor: Add new recommendation
     private function handleAddRecommendation()
     {
+        if (!in_array($_SESSION['role'], ['admin', 'doctor'])) {
+            $_SESSION['error'] = 'Unauthorized access';
+            header('Location: ../Views/dashboard.php');
+            exit();
+        }
+
         $recommendationData = [
             'title' => $_POST['title'],
             'description' => $_POST['description'],
-            'bp_range_systolic_min' => $_POST['systolic_min'],
-            'bp_range_systolic_max' => $_POST['systolic_max'],
-            'bp_range_diastolic_min' => $_POST['diastolic_min'],
-            'bp_range_diastolic_max' => $_POST['diastolic_max'],
             'created_by' => $_SESSION['user_id']
         ];
 
@@ -58,16 +61,19 @@ class RekomendasiController
         exit();
     }
 
+    // Admin/Doctor: Edit existing recommendation
     private function handleEditRecommendation()
     {
+        if (!in_array($_SESSION['role'], ['admin', 'doctor'])) {
+            $_SESSION['error'] = 'Unauthorized access';
+            header('Location: ../Views/dashboard.php');
+            exit();
+        }
+
         $recommendationId = $_POST['recommendation_id'];
         $recommendationData = [
             'title' => $_POST['title'],
-            'description' => $_POST['description'],
-            'bp_range_systolic_min' => $_POST['systolic_min'],
-            'bp_range_systolic_max' => $_POST['systolic_max'],
-            'bp_range_diastolic_min' => $_POST['diastolic_min'],
-            'bp_range_diastolic_max' => $_POST['diastolic_max']
+            'description' => $_POST['description']
         ];
 
         if ($this->rekomendasiModel->updateRecommendation($recommendationId, $recommendationData)) {
@@ -80,8 +86,15 @@ class RekomendasiController
         exit();
     }
 
+    // Admin/Doctor: Delete recommendation
     private function handleDeleteRecommendation()
     {
+        if (!in_array($_SESSION['role'], ['admin', 'doctor'])) {
+            $_SESSION['error'] = 'Unauthorized access';
+            header('Location: ../Views/dashboard.php');
+            exit();
+        }
+
         $recommendationId = $_POST['recommendation_id'];
 
         if ($this->rekomendasiModel->deleteRecommendation($recommendationId)) {
@@ -94,8 +107,15 @@ class RekomendasiController
         exit();
     }
 
+    // Admin/Doctor: Assign recommendation to patient
     private function handleAssignRecommendation()
     {
+        if (!in_array($_SESSION['role'], ['admin', 'doctor'])) {
+            $_SESSION['error'] = 'Unauthorized access';
+            header('Location: ../Views/dashboard.php');
+            exit();
+        }
+
         $patientRecommendationData = [
             'patient_id' => $_POST['patient_id'],
             'recommendation_id' => $_POST['recommendation_id'],
@@ -115,27 +135,34 @@ class RekomendasiController
     // Public methods for view data
     public function getAllRecommendations()
     {
-        return $this->rekomendasiModel->getAllRecommendations();
+        if (in_array($_SESSION['role'], ['admin', 'doctor'])) {
+            return $this->rekomendasiModel->getAllRecommendations();
+        }
+        return [];
     }
 
     public function getRecommendationById($recommendationId)
     {
-        return $this->rekomendasiModel->getRecommendationById($recommendationId);
+        if (in_array($_SESSION['role'], ['admin', 'doctor'])) {
+            return $this->rekomendasiModel->getRecommendationById($recommendationId);
+        }
+        return null;
     }
 
     public function getPatientRecommendations($patientId)
     {
+        if ($_SESSION['role'] === 'patient' && $_SESSION['user_id'] != $patientId) {
+            return [];
+        }
         return $this->rekomendasiModel->getPatientRecommendations($patientId);
-    }
-
-    public function getRecommendationByBPReadings($systolic, $diastolic)
-    {
-        return $this->rekomendasiModel->getRecommendationByBPReadings($systolic, $diastolic);
     }
 
     public function getRecommendationStats()
     {
-        return $this->rekomendasiModel->getRecommendationStats();
+        if (in_array($_SESSION['role'], ['admin', 'doctor'])) {
+            return $this->rekomendasiModel->getRecommendationStats();
+        }
+        return [];
     }
 }
 

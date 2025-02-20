@@ -19,38 +19,6 @@
                         <textarea class="form-control" id="add_description" name="description" rows="3"
                             required></textarea>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label" for="add_systolic_min">Systolic Min</label>
-                                <input type="number" class="form-control" id="add_systolic_min" name="systolic_min"
-                                    min="0" max="300" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label" for="add_systolic_max">Systolic Max</label>
-                                <input type="number" class="form-control" id="add_systolic_max" name="systolic_max"
-                                    min="0" max="300" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label" for="add_diastolic_min">Diastolic Min</label>
-                                <input type="number" class="form-control" id="add_diastolic_min" name="diastolic_min"
-                                    min="0" max="200" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label" for="add_diastolic_max">Diastolic Max</label>
-                                <input type="number" class="form-control" id="add_diastolic_max" name="diastolic_max"
-                                    min="0" max="200" required>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -83,38 +51,6 @@
                         <textarea class="form-control" id="edit_description" name="description" rows="3"
                             required></textarea>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label" for="edit_systolic_min">Systolic Min</label>
-                                <input type="number" class="form-control" id="edit_systolic_min" name="systolic_min"
-                                    min="0" max="300" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label" for="edit_systolic_max">Systolic Max</label>
-                                <input type="number" class="form-control" id="edit_systolic_max" name="systolic_max"
-                                    min="0" max="300" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label" for="edit_diastolic_min">Diastolic Min</label>
-                                <input type="number" class="form-control" id="edit_diastolic_min" name="diastolic_min"
-                                    min="0" max="200" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label" for="edit_diastolic_max">Diastolic Max</label>
-                                <input type="number" class="form-control" id="edit_diastolic_max" name="diastolic_max"
-                                    min="0" max="200" required>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -125,25 +61,38 @@
     </div>
 </div>
 
-<!-- Delete Recommendation Modal -->
-<div class="modal fade" id="deleteRecommendationModal" tabindex="-1" role="dialog"
-    aria-labelledby="deleteRecommendationModalLabel">
+<!-- Assign Recommendation Modal -->
+<div class="modal fade" id="assignRecommendationModal" tabindex="-1" role="dialog"
+    aria-labelledby="assignRecommendationModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteRecommendationModalLabel">Hapus Rekomendasi</h5>
+                <h5 class="modal-title" id="assignRecommendationModalLabel">Berikan Rekomendasi ke Pasien</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="../Controllers/RekomendasiController.php" method="POST">
-                <input type="hidden" name="action" value="delete_recommendation">
-                <input type="hidden" name="recommendation_id" id="delete_recommendation_id">
+                <input type="hidden" name="action" value="assign_recommendation">
+                <input type="hidden" name="patient_id" id="assign_patient_id">
+                <input type="hidden" name="reading_id" id="assign_reading_id">
                 <div class="modal-body">
-                    <p>Anda yakin ingin menghapus rekomendasi ini?</p>
-                    <p class="text-danger"><small>Tindakan ini tidak dapat dibatalkan</small></p>
+                    <div class="mb-3">
+                        <label class="form-label" for="assign_recommendation_id">Pilih Rekomendasi</label>
+                        <select class="form-select" id="assign_recommendation_id" name="recommendation_id" required>
+                            <option value="">Pilih Rekomendasi...</option>
+                            <?php foreach ($recommendations as $rec): ?>
+                                <option value="<?= $rec['recommendation_id'] ?>"><?= htmlspecialchars($rec['title']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div id="recommendation_preview" class="mb-3 d-none">
+                        <label class="form-label">Deskripsi Rekomendasi:</label>
+                        <p id="preview_description" class="form-text"></p>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-danger">Hapus</button>
+                    <button type="submit" class="btn btn-primary">Berikan Rekomendasi</button>
                 </div>
             </form>
         </div>
@@ -169,24 +118,16 @@
                     <div class="col-sm-8" id="view_description"></div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-sm-4 fw-bold">Range Systolic</div>
-                    <div class="col-sm-8">
-                        <span id="view_systolic_min"></span> - <span id="view_systolic_max"></span> mmHg
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-sm-4 fw-bold">Range Diastolic</div>
-                    <div class="col-sm-8">
-                        <span id="view_diastolic_min"></span> - <span id="view_diastolic_max"></span> mmHg
-                    </div>
-                </div>
-                <div class="row mb-3">
                     <div class="col-sm-4 fw-bold">Dibuat Oleh</div>
                     <div class="col-sm-8" id="view_created_by"></div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-sm-4 fw-bold">Tanggal Dibuat</div>
                     <div class="col-sm-8" id="view_created_at"></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Total Pasien</div>
+                    <div class="col-sm-8" id="view_total_patients"></div>
                 </div>
             </div>
             <div class="modal-footer">
