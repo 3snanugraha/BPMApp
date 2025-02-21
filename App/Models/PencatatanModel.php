@@ -79,6 +79,12 @@ class PencatatanModel
         return $this->db->query($query, [$readingId]);
     }
 
+    public function deleteReadingRecommendations($readingId)
+    {
+        $query = "DELETE FROM patient_recommendations WHERE reading_id = ?";
+        return $this->db->query($query, [$readingId]);
+    }
+
     public function getPatientsList()
     {
         $query = "SELECT patient_id, full_name FROM patient_profiles ORDER BY full_name ASC";

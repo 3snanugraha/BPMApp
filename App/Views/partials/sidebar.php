@@ -1,7 +1,7 @@
 <aside class="left-sidebar">
     <div>
         <div class="brand-logo d-flex align-items-center justify-content-between">
-            <a href="./index.html" class="text-nowrap logo-img">
+            <a href="dashboard.php" class="text-nowrap logo-img">
                 <img src="assets/images/logos/bpm_logo.png" width="120" alt="" />
             </a>
             <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
@@ -31,12 +31,12 @@
                         <span class="hide-menu">Pencatatan Tekanan</span>
                     </a>
                 </li>
-                <li class="sidebar-item">
+                <!-- <li class="sidebar-item">
                     <a class="sidebar-link" href="riwayat.php" aria-expanded="false">
                         <span><i class="ti ti-chart-line"></i></span>
                         <span class="hide-menu">Riwayat Tekanan</span>
                     </a>
-                </li>
+                </li> -->
 
                 <!-- Medis -->
                 <li class="nav-small-cap">
@@ -93,7 +93,7 @@
                     <span class="hide-menu">Akun</span>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="./profile" aria-expanded="false">
+                    <a class="sidebar-link" href="profil.php" aria-expanded="false">
                         <span><i class="ti ti-user-circle"></i></span>
                         <span class="hide-menu">Profil</span>
                     </a>

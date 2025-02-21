@@ -33,6 +33,7 @@ class PencatatanController
         }
     }
 
+
     private function handleAddReading()
     {
         if (!isset($_SESSION['user_id'])) {
@@ -110,7 +111,7 @@ class PencatatanController
         $readingId = $_POST['reading_id'];
         $reading = $this->pencatatanModel->getReadingById($readingId);
 
-        // Check authorization
+        // For patient role, check if the reading belongs to them
         if ($_SESSION['role'] === 'patient') {
             $patientId = $this->pencatatanModel->getPatientIdByUserId($_SESSION['user_id']);
             if ($reading['patient_id'] != $patientId) {
@@ -120,6 +121,10 @@ class PencatatanController
             }
         }
 
+        // Delete related recommendations first due to foreign key constraint
+        $this->pencatatanModel->deleteReadingRecommendations($readingId);
+
+        // Then delete the reading
         if ($this->pencatatanModel->deleteReading($readingId)) {
             $_SESSION['success'] = 'Data tekanan darah berhasil dihapus';
         } else {

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 20, 2025 at 08:09 PM
+-- Generation Time: Feb 21, 2025 at 01:12 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -45,7 +45,7 @@ INSERT INTO `blood_pressure_readings` (`reading_id`, `patient_id`, `systolic`, `
 (1, 1, 130, 85, 75, '2025-02-19 22:05:47', 'Pengukuran pagi hari'),
 (2, 1, 135, 88, 78, '2025-02-19 22:05:47', 'Setelah olahraga'),
 (3, 2, 128, 82, 72, '2025-02-19 22:05:47', 'Pengukuran rutin'),
-(4, 2, 125, 80, 70, '2025-02-19 22:05:47', 'Kondisi istirahat');
+(4, 2, 125, 70, 90, '2025-02-19 22:05:47', 'Kondisi istirahat');
 
 -- --------------------------------------------------------
 
@@ -138,7 +138,8 @@ CREATE TABLE `patient_medications` (
 
 INSERT INTO `patient_medications` (`patient_medication_id`, `patient_id`, `medication_id`, `dosage`, `frequency`, `start_date`, `end_date`, `prescribed_by`, `notes`) VALUES
 (1, 1, 1, '1 tablet', 'Sekali sehari', '2023-01-01', '2024-01-01', 1, 'Diminum pagi hari'),
-(2, 2, 2, '1 tablet', 'Dua kali sehari', '2023-01-01', '2024-01-01', 2, 'Diminum pagi dan malam');
+(2, 2, 2, '1 tablet', 'Dua kali sehari', '2023-01-01', '2024-01-01', 2, 'Diminum pagi dan malam'),
+(3, 2, 1, '1 Tablet', '3x Sehari', '2025-02-22', '2025-02-25', 1, 'Tidak dimakan, tapi diminum');
 
 -- --------------------------------------------------------
 
@@ -188,8 +189,8 @@ CREATE TABLE `patient_recommendations` (
 --
 
 INSERT INTO `patient_recommendations` (`patient_recommendation_id`, `patient_id`, `reading_id`, `title`, `description`, `created_by`, `created_at`) VALUES
-(1, 1, 1, 'Prehipertensi - Perlu Perhatian', 'Tekanan darah Anda sedikit tinggi. Disarankan untuk:\n- Kurangi asupan garam\n- Tingkatkan aktivitas fisik\n- Hindari stres berlebih\n- Pantau tekanan darah secara rutin', 2, '2025-02-19 15:05:47'),
-(2, 1, 2, 'Evaluasi Pasca Olahraga', 'Tekanan darah pasca olahraga menunjukkan respon normal. Rekomendasi:\n- Pertahankan rutinitas olahraga\n- Istirahat cukup\n- Jaga hidrasi\n- Lakukan pendinginan setelah olahraga', 2, '2025-02-19 15:05:47'),
+(1, 1, 1, 'Prehipertensi - Perlu Perhatian', 'Tekanan darah Anda sedikit tinggi. Disarankan untuk:\r\n- Kurangi asupan garam\r\n- Tingkatkan aktivitas fisik\r\n- Hindari stres berlebih\r\n- Pantau tekanan darah secara rutin', 2, '2025-02-19 15:05:47'),
+(2, 1, 2, 'Evaluasi Pasca Olahraga', 'Tekanan darah pasca olahraga menunjukkan respon normal. Rekomendasi:\r\n- Pertahankan rutinitas olahraga\r\n- Istirahat cukup\r\n- Jaga hidrasi\r\n- Lakukan pendinginan setelah olahraga', 2, '2025-02-19 15:05:47'),
 (3, 2, 3, 'Tekanan Darah Normal', 'Hasil pemeriksaan menunjukkan tekanan darah normal. Saran:\n- Pertahankan pola makan sehat\n- Lanjutkan aktivitas fisik teratur\n- Jaga kualitas tidur\n- Lakukan pemeriksaan rutin', 3, '2025-02-19 15:05:47'),
 (4, 2, 4, 'Kondisi Optimal', 'Tekanan darah dalam kondisi optimal. Rekomendasi:\n- Pertahankan gaya hidup sehat\n- Konsumsi makanan seimbang\n- Kelola stres dengan baik\n- Rutin check-up kesehatan', 3, '2025-02-19 15:05:47');
 
@@ -218,9 +219,7 @@ INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `role`, `create
 (2, 'dr.budi', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'budi@bpm.com', 'doctor', '2025-02-19 22:05:47', '2025-02-19 22:05:47'),
 (3, 'dr.ani', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'ani@bpm.com', 'doctor', '2025-02-19 22:05:47', '2025-02-19 22:05:47'),
 (4, 'ahmad', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'ahmad@mail.com', 'patient', '2025-02-19 22:05:47', '2025-02-19 22:05:47'),
-(5, 'siti', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'siti@mail.com', 'patient', '2025-02-19 22:05:47', '2025-02-19 22:05:47'),
-(6, 'Drss', '$2y$10$F58mvAXEIiuWMaAOCUI6U.kdTpL9OF9bGF/8F.twdJ6sHXhUTNNau', 'developer@artadev.my.id', 'doctor', '2025-02-20 12:28:39', '2025-02-20 12:28:39'),
-(7, 'safas', '$2y$10$MFqCXujPnRYkj3/HQhbwceg.icUi4EBl/7c41svSG//Rk/hc4duz.', 'trisnanugraha87@gmail.com', 'doctor', '2025-02-20 12:30:22', '2025-02-20 12:30:22');
+(5, 'siti', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'siti@mail.com', 'patient', '2025-02-19 22:05:47', '2025-02-21 00:39:42');
 
 --
 -- Indexes for dumped tables
@@ -296,7 +295,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `blood_pressure_readings`
 --
 ALTER TABLE `blood_pressure_readings`
-  MODIFY `reading_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `reading_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `doctor_profiles`
@@ -308,31 +307,31 @@ ALTER TABLE `doctor_profiles`
 -- AUTO_INCREMENT for table `medications`
 --
 ALTER TABLE `medications`
-  MODIFY `medication_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `medication_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `patient_medications`
 --
 ALTER TABLE `patient_medications`
-  MODIFY `patient_medication_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `patient_medication_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `patient_profiles`
 --
 ALTER TABLE `patient_profiles`
-  MODIFY `patient_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `patient_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `patient_recommendations`
 --
 ALTER TABLE `patient_recommendations`
-  MODIFY `patient_recommendation_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `patient_recommendation_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Constraints for dumped tables

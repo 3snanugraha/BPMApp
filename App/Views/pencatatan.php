@@ -31,7 +31,7 @@ $totalReadings = count($readings);
         <?php include 'partials/sidebar.php'; ?>
         <div class="body-wrapper">
             <?php include 'partials/header.php'; ?>
-            <div class="container-fluid">
+            < class="container-fluid">
                 <!-- Information Section -->
                 <div class="row">
                     <div class="col-12">
@@ -75,6 +75,38 @@ $totalReadings = count($readings);
                     </div>
                 </div>
 
+                <!-- Alert Messages -->
+                <div class="row m-5">
+                    <?php if (isset($_SESSION['error'])): ?>
+                        <div class="alert alert-danger alert-dismissible fade show border-start border-danger border-5"
+                            role="alert">
+                            <div class="d-flex align-items-center">
+                                <i class="ti ti-alert-circle fs-5 me-2"></i>
+                                <div>
+                                    <strong>Oops!</strong> <?= $_SESSION['error'] ?>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <?php unset($_SESSION['error']); ?>
+                    <?php endif; ?>
+
+                    <?php if (isset($_SESSION['success'])): ?>
+                        <div class="alert alert-success alert-dismissible fade show border-start border-success border-5"
+                            role="alert">
+                            <div class="d-flex align-items-center">
+                                <i class="ti ti-check-circle fs-5 me-2"></i>
+                                <div>
+                                    <strong>Berhasil!</strong> <?= $_SESSION['success'] ?>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <?php unset($_SESSION['success']); ?>
+                    <?php endif; ?>
+                </div>
+                <!-- /Alert Messages -->
+
                 <!-- Custom Datatable Section -->
                 <div class="row">
                     <div class="col-12">
@@ -114,14 +146,21 @@ $totalReadings = count($readings);
                                                         </button>
                                                         <button type="button" class="btn btn-warning btn-sm edit-reading"
                                                             data-bs-toggle="modal" data-bs-target="#editReadingModal"
-                                                            data-reading='<?= json_encode($reading) ?>'>
+                                                            data-reading='<?= json_encode([
+                                                                "reading_id" => $reading["reading_id"],
+                                                                "systolic" => $reading["systolic"],
+                                                                "diastolic" => $reading["diastolic"],
+                                                                "pulse_rate" => $reading["pulse_rate"],
+                                                                "notes" => $reading["notes"]
+                                                            ]) ?>'>
                                                             <i class="ti ti-edit"></i>
                                                         </button>
                                                         <button type="button" class="btn btn-danger btn-sm delete-reading"
                                                             data-bs-toggle="modal" data-bs-target="#deleteReadingModal"
-                                                            data-id="<?= $reading['reading_id'] ?>">
+                                                            data-reading-id="<?= $reading['reading_id'] ?>">
                                                             <i class="ti ti-trash"></i>
                                                         </button>
+
                                                     </td>
                                                 </tr>
                                             <?php endforeach; ?>
@@ -135,8 +174,8 @@ $totalReadings = count($readings);
 
                 <?php include 'partials/footer.php'; ?>
                 <?php include 'partials/pencatatan-modals.php'; ?>
-            </div>
         </div>
+    </div>
     </div>
 
     <script src="assets/libs/jquery/dist/jquery.min.js"></script>
@@ -160,26 +199,33 @@ $totalReadings = count($readings);
                 }
             });
 
+            // View Reading Modal
             $('.view-reading').on('click', function () {
                 var reading = $(this).data('reading');
-                $('#view_patient_name').text(reading.patient_name);
-                $('#view_blood_pressure').text(reading.systolic + '/' + reading.diastolic + ' mmHg');
-                $('#view_pulse_rate').text(reading.pulse_rate + ' bpm');
-                $('#view_reading_date').text(new Date(reading.reading_date).toLocaleString());
-                $('#view_notes').text(reading.notes);
+                if (reading) {
+                    $('#view_patient_name').text(reading.patient_name || '');
+                    $('#view_blood_pressure').text(reading.systolic + '/' + reading.diastolic + ' mmHg');
+                    $('#view_pulse_rate').text(reading.pulse_rate + ' bpm');
+                    $('#view_reading_date').text(new Date(reading.reading_date).toLocaleString('id-ID'));
+                    $('#view_notes').text(reading.notes || '-');
+                }
             });
 
+            // Edit Reading Modal
             $('.edit-reading').on('click', function () {
                 var reading = $(this).data('reading');
-                $('#edit_reading_id').val(reading.reading_id);
-                $('#edit_systolic').val(reading.systolic);
-                $('#edit_diastolic').val(reading.diastolic);
-                $('#edit_pulse_rate').val(reading.pulse_rate);
-                $('#edit_notes').val(reading.notes);
+                if (reading) {
+                    $('#edit_reading_id').val(reading.reading_id);
+                    $('#edit_systolic').val(reading.systolic);
+                    $('#edit_diastolic').val(reading.diastolic);
+                    $('#edit_pulse_rate').val(reading.pulse_rate);
+                    $('#edit_notes').val(reading.notes);
+                }
             });
 
+            // Delete Reading Handler
             $('.delete-reading').on('click', function () {
-                var readingId = $(this).data('id');
+                var readingId = $(this).data('reading-id');
                 $('#delete_reading_id').val(readingId);
             });
         });

@@ -76,6 +76,38 @@ $totalDoctors = count($doctors);
                 </div>
                 <!-- /Information Section -->
 
+                <!-- Alert Messages -->
+                <div class="row m-5">
+                    <?php if (isset($_SESSION['error'])): ?>
+                        <div class="alert alert-danger alert-dismissible fade show border-start border-danger border-5"
+                            role="alert">
+                            <div class="d-flex align-items-center">
+                                <i class="ti ti-alert-circle fs-5 me-2"></i>
+                                <div>
+                                    <strong>Oops!</strong> <?= $_SESSION['error'] ?>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <?php unset($_SESSION['error']); ?>
+                    <?php endif; ?>
+
+                    <?php if (isset($_SESSION['success'])): ?>
+                        <div class="alert alert-success alert-dismissible fade show border-start border-success border-5"
+                            role="alert">
+                            <div class="d-flex align-items-center">
+                                <i class="ti ti-check-circle fs-5 me-2"></i>
+                                <div>
+                                    <strong>Berhasil!</strong> <?= $_SESSION['success'] ?>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <?php unset($_SESSION['success']); ?>
+                    <?php endif; ?>
+                </div>
+                <!-- /Alert Messages -->
+
                 <!-- Custom Datatable Section -->
                 <div class="row">
                     <div class="col-12">

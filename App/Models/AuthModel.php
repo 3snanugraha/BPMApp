@@ -27,13 +27,16 @@ class AuthModel
         $query = "INSERT INTO users (username, password, email, role) 
                   VALUES (?, ?, ?, ?)";
 
-        return $this->db->query($query, [
+        $this->db->query($query, [
             $data['username'],
             $hashedPassword,
             $data['email'],
             $data['role']
         ]);
+
+        return $this->db->lastInsertId(); // Return the user_id directly
     }
+
 
     public function createUserProfile($userId, $data)
     {

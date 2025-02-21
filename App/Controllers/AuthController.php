@@ -71,13 +71,13 @@ class AuthController
 
         if ($this->authModel->checkUsernameExists($userData['username'])) {
             $_SESSION['error'] = 'Username sudah digunakan';
-            header('Location: ../Views/register.php');
+            header('Location: ../Views/index.php');
             exit();
         }
 
         if ($this->authModel->checkEmailExists($userData['email'])) {
             $_SESSION['error'] = 'Email sudah digunakan';
-            header('Location: ../Views/register.php');
+            header('Location: ../Views/index.php');
             exit();
         }
 
@@ -90,10 +90,7 @@ class AuthController
                 'phone_number' => $_POST['phone_number']
             ];
 
-            if ($_POST['role'] === 'doctor') {
-                $profileData['specialization'] = $_POST['specialization'];
-                $profileData['license_number'] = $_POST['license_number'];
-            } else if ($_POST['role'] === 'patient') {
+            if ($_POST['role'] === 'patient') {
                 $profileData['date_of_birth'] = $_POST['date_of_birth'];
                 $profileData['gender'] = $_POST['gender'];
                 $profileData['address'] = $_POST['address'];
@@ -107,12 +104,9 @@ class AuthController
             $_SESSION['success'] = 'Registrasi berhasil, silakan login';
             header('Location: ../Views/index.php');
             exit();
-        } else {
-            $_SESSION['error'] = 'Registrasi gagal';
-            header('Location: ../Views/register.php');
-            exit();
         }
     }
+
 
     private function handleLogout()
     {

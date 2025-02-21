@@ -33,7 +33,7 @@
                     const presHtml = data.prescriptions.length ? data.prescriptions.map(pres => `
                     <a href="pengobatan.php" class="message-item d-flex align-items-center border-bottom px-3 py-2">
                         <span class="btn btn-light-warning text-warning btn-circle">
-                            <i class="ti ti-medicine fs-5"></i>
+                            <i class="ti ti-heart fs-5"></i>
                         </span>
                         <div class="w-75 d-inline-block v-middle ps-3">
                             <h6 class="mb-1 fw-semibold">${pres.medication_name}</h6>
