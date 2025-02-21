@@ -153,6 +153,11 @@ class PencatatanController
         return [];
     }
 
+    public function getReadingById($readingId)
+    {
+        return $this->pencatatanModel->getReadingById($readingId);
+    }
+
     public function getReadingStats()
     {
         if ($_SESSION['role'] === 'patient') {

@@ -174,8 +174,8 @@ $totalReadings = count($readings);
 
                 <?php include 'partials/footer.php'; ?>
                 <?php include 'partials/pencatatan-modals.php'; ?>
+            </div>
         </div>
-    </div>
     </div>
 
     <script src="assets/libs/jquery/dist/jquery.min.js"></script>
@@ -199,19 +199,6 @@ $totalReadings = count($readings);
                 }
             });
 
-            // View Reading Modal
-            $('.view-reading').on('click', function () {
-                var reading = $(this).data('reading');
-                if (reading) {
-                    $('#view_patient_name').text(reading.patient_name || '');
-                    $('#view_blood_pressure').text(reading.systolic + '/' + reading.diastolic + ' mmHg');
-                    $('#view_pulse_rate').text(reading.pulse_rate + ' bpm');
-                    $('#view_reading_date').text(new Date(reading.reading_date).toLocaleString('id-ID'));
-                    $('#view_notes').text(reading.notes || '-');
-                }
-            });
-
-            // Edit Reading Modal
             $('.edit-reading').on('click', function () {
                 var reading = $(this).data('reading');
                 if (reading) {
@@ -220,6 +207,16 @@ $totalReadings = count($readings);
                     $('#edit_diastolic').val(reading.diastolic);
                     $('#edit_pulse_rate').val(reading.pulse_rate);
                     $('#edit_notes').val(reading.notes);
+                }
+            });
+
+            $('.view-reading').on('click', function () {
+                var reading = $(this).data('reading');
+                if (reading) {
+                    $('#view_blood_pressure').text(reading.systolic + '/' + reading.diastolic + ' mmHg');
+                    $('#view_pulse_rate').text(reading.pulse_rate + ' bpm');
+                    $('#view_reading_date').text(new Date(reading.reading_date).toLocaleString('id-ID'));
+                    $('#view_notes').text(reading.notes || '-');
                 }
             });
 

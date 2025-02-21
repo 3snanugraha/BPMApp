@@ -33,12 +33,13 @@ class PencatatanModel
 
     public function getReadingById($readingId)
     {
-        $query = "SELECT bpr.*, pp.full_name as patient_name
-                  FROM blood_pressure_readings bpr
-                  JOIN patient_profiles pp ON bpr.patient_id = pp.patient_id
+        $query = "SELECT bpr.*, 
+                         CONCAT(bpr.systolic, '/', bpr.diastolic) as blood_pressure
+                  FROM blood_pressure_readings bpr 
                   WHERE bpr.reading_id = ?";
         return $this->db->query($query, [$readingId])->fetch();
     }
+
 
     public function addReading($data)
     {
