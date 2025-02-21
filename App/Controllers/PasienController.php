@@ -191,6 +191,22 @@ class PasienController
     {
         return $this->pasienModel->getAssignedDoctors($patientId);
     }
+
+    public function getPatientIdByUserId($userId)
+    {
+        return $this->pasienModel->getPatientIdByUserId($userId);
+    }
+
+    public function getLatestReading($patientId)
+    {
+        return $this->pasienModel->getLatestReading($patientId);
+    }
+
+    public function getTotalReadings($patientId)
+    {
+        return $this->pasienModel->getTotalReadings($patientId);
+    }
+
 }
 
 // Handle incoming requests

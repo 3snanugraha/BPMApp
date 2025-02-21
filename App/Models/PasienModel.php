@@ -93,15 +93,14 @@ class PasienModel
     public function getLatestReading($patientId)
     {
         $query = "SELECT bpr.*, 
-                         hr.title as recommendation_title,
-                         hr.description as recommendation_description
+                         CONCAT(bpr.systolic, '/', bpr.diastolic) as blood_pressure,
+                         pr.title as recommendation_title,
+                         pr.description as recommendation_description
                   FROM blood_pressure_readings bpr
                   LEFT JOIN patient_recommendations pr ON bpr.reading_id = pr.reading_id
-                  LEFT JOIN health_recommendations hr ON pr.recommendation_id = hr.recommendation_id
                   WHERE bpr.patient_id = ?
                   ORDER BY bpr.reading_date DESC
                   LIMIT 1";
-
         return $this->db->query($query, [$patientId])->fetch();
     }
 
@@ -322,4 +321,16 @@ class PasienModel
                   WHERE dp.patient_id = ?";
         return $this->db->query($query, [$patientId])->fetchAll();
     }
+    public function getPatientIdByUserId($userId)
+    {
+        $query = "SELECT patient_id FROM patient_profiles WHERE user_id = ?";
+        return $this->db->query($query, [$userId])->fetch(PDO::FETCH_COLUMN);
+    }
+
+    public function getTotalReadings($patientId)
+    {
+        $query = "SELECT COUNT(*) FROM blood_pressure_readings WHERE patient_id = ?";
+        return $this->db->query($query, [$patientId])->fetch(PDO::FETCH_COLUMN);
+    }
+
 }

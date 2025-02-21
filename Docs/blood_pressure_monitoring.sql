@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 21, 2025 at 01:12 AM
+-- Generation Time: Feb 21, 2025 at 01:30 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -137,8 +137,8 @@ CREATE TABLE `patient_medications` (
 --
 
 INSERT INTO `patient_medications` (`patient_medication_id`, `patient_id`, `medication_id`, `dosage`, `frequency`, `start_date`, `end_date`, `prescribed_by`, `notes`) VALUES
-(1, 1, 1, '1 tablet', 'Sekali sehari', '2023-01-01', '2024-01-01', 1, 'Diminum pagi hari'),
-(2, 2, 2, '1 tablet', 'Dua kali sehari', '2023-01-01', '2024-01-01', 2, 'Diminum pagi dan malam'),
+(1, 1, 1, '1 tablet', 'Sekali sehari', '2025-02-21', '2024-01-01', 1, 'Diminum pagi hari'),
+(2, 2, 2, '1 tablet', 'Dua kali sehari', '2025-02-21', '2025-03-21', 2, 'Diminum pagi dan malam'),
 (3, 2, 1, '1 Tablet', '3x Sehari', '2025-02-22', '2025-02-25', 1, 'Tidak dimakan, tapi diminum');
 
 -- --------------------------------------------------------
