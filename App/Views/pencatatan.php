@@ -31,7 +31,7 @@ $totalReadings = count($readings);
         <?php include 'partials/sidebar.php'; ?>
         <div class="body-wrapper">
             <?php include 'partials/header.php'; ?>
-            < class="container-fluid">
+            <div class="container-fluid">
                 <!-- Information Section -->
                 <div class="row">
                     <div class="col-12">
@@ -39,7 +39,7 @@ $totalReadings = count($readings);
                             <div class="card-body bg-light-primary">
                                 <div class="row align-items-center">
                                     <div class="col-lg-4">
-                                        <img src="assets/images/data/data.png" alt="Blood Pressure Statistics"
+                                        <img src="assets/images/data/data-dashboard.png" alt="Blood Pressure Statistics"
                                             class="img-fluid">
                                     </div>
                                     <div class="col-lg-6">

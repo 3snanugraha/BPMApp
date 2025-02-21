@@ -42,7 +42,7 @@ $totalMedications = count($medications);
                             <div class="card-body bg-light-primary">
                                 <div class="row align-items-center">
                                     <div class="col-lg-4">
-                                        <img src="assets/images/data/data.png" alt="Medication Statistics"
+                                        <img src="assets/images/data/data-dashboard.png" alt="Medication Statistics"
                                             class="img-fluid">
                                     </div>
                                     <div class="col-lg-6">

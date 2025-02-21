@@ -59,6 +59,26 @@ class RekomendasiModel
         return $this->db->query($query, [$userId])->fetchAll();
     }
 
+    public function getDashboardRecommendations($patientId)
+    {
+        $query = "SELECT pr.title, 
+                         pr.description,
+                         pr.created_at,
+                         dp.full_name as created_by_name,
+                         bpr.systolic, 
+                         bpr.diastolic,
+                         bpr.reading_date
+                  FROM patient_recommendations pr
+                  JOIN blood_pressure_readings bpr ON pr.reading_id = bpr.reading_id
+                  JOIN users u ON pr.created_by = u.user_id
+                  JOIN doctor_profiles dp ON u.user_id = dp.user_id
+                  WHERE pr.patient_id = ?
+                  AND pr.created_at >= DATE_SUB(CURRENT_DATE, INTERVAL 30 DAY)
+                  ORDER BY pr.created_at DESC 
+                  LIMIT 3";
+        return $this->db->query($query, [$patientId])->fetchAll();
+    }
+
     // For Admin/Doctor: Get recommendation details
     public function getRecommendationById($recommendationId)
     {

@@ -136,6 +136,14 @@ class PengobatanController
         return $this->pengobatanModel->getPatientPrescriptions($patientId);
     }
 
+    public function getDashboardMedications($patientId)
+    {
+        if ($_SESSION['role'] === 'patient') {
+            return $this->pengobatanModel->getDashboardMedications($patientId);
+        }
+        return [];
+    }
+
     public function getDoctorPrescriptions($doctorId)
     {
         if ($_SESSION['role'] === 'doctor' && $_SESSION['user_id'] != $doctorId) {

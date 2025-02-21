@@ -56,6 +56,26 @@ class PengobatanModel
         return $this->db->query($query, [$userId])->fetchAll();
     }
 
+    public function getDashboardMedications($patientId)
+    {
+        $query = "SELECT pm.dosage,
+                     pm.frequency,
+                     pm.start_date,
+                     pm.end_date,
+                     m.name as medication_name,
+                     m.dosage_form,
+                     dp.full_name as doctor_name
+              FROM patient_medications pm
+              JOIN medications m ON pm.medication_id = m.medication_id
+              JOIN doctor_profiles dp ON pm.prescribed_by = dp.doctor_id
+              WHERE pm.patient_id = ?
+              AND pm.end_date >= CURRENT_DATE
+              AND pm.start_date <= CURRENT_DATE
+              ORDER BY pm.start_date DESC";
+        return $this->db->query($query, [$patientId])->fetchAll();
+    }
+
+
     public function getDoctorPrescriptions($doctorId)
     {
         $query = "SELECT pm.*, 

@@ -1,8 +1,11 @@
 <?php
+date_default_timezone_set('Asia/Jakarta');
 require_once __DIR__ . '/../Controllers/AuthController.php';
 require_once __DIR__ . '/../Controllers/PasienController.php';
 require_once __DIR__ . '/../Controllers/DokterController.php';
 require_once __DIR__ . '/../Controllers/PencatatanController.php';
+require_once __DIR__ . '/../Controllers/PengobatanController.php';
+require_once __DIR__ . '/../Controllers/RekomendasiController.php';
 
 session_start();
 
@@ -10,6 +13,26 @@ $auth = new AuthController();
 $auth->checkAuth(); // Redirect to login if not authenticated
 
 $userRole = $_SESSION['role'];
+
+// Initialize controllers based on role
+if ($userRole === 'patient') {
+    $pasienController = new PasienController();
+    $pengobatanController = new PengobatanController();
+    $rekomendasiController = new RekomendasiController();
+
+    // Get patient data
+    $patientId = $pasienController->getPatientIdByUserId($_SESSION['user_id']);
+    $patientProfile = $pasienController->getPatientById($patientId);
+    $latestReading = $pasienController->getLatestReading($patientId);
+    $totalReadings = $pasienController->getTotalReadings($patientId);
+    $recentReadings = $pasienController->getPatientBloodPressureReadings($patientId);
+
+    // Dashboard-specific data retrieval
+    $activeMedications = $pengobatanController->getDashboardMedications($patientId);
+    $recommendations = $rekomendasiController->getDashboardRecommendations($patientId);
+}
+
+
 ?>
 
 <!doctype html>
@@ -18,7 +41,7 @@ $userRole = $_SESSION['role'];
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Modernize Free</title>
+    <title>Dashboard - Sistem Monitoring Tekanan Darah</title>
     <link rel="shortcut icon" type="image/png" href="assets/images/logos/favicon.png" />
     <link rel="stylesheet" href="assets/css/styles.min.css" />
 </head>

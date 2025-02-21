@@ -122,6 +122,15 @@ class RekomendasiController
         return $this->rekomendasiModel->getPatientRecommendations($patientId);
     }
 
+    public function getDashboardRecommendations($patientId)
+    {
+        if ($_SESSION['role'] === 'patient') {
+            return $this->rekomendasiModel->getDashboardRecommendations($patientId);
+        }
+        return [];
+    }
+
+
     public function getRecommendationStats()
     {
         if (in_array($_SESSION['role'], ['admin', 'doctor'])) {
