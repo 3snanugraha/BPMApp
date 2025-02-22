@@ -129,9 +129,7 @@ $totalRecommendations = count($recommendations);
                                                 <th>Deskripsi</th>
                                                 <th>Dibuat Oleh</th>
                                                 <th>Tanggal</th>
-                                                <?php if (in_array($_SESSION['role'], ['admin', 'doctor'])): ?>
-                                                    <th>Aksi</th>
-                                                <?php endif; ?>
+                                                <th>Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -152,8 +150,15 @@ $totalRecommendations = count($recommendations);
                                                     <td><?= htmlspecialchars($recommendation['created_by_name']) ?></td>
                                                     <td><?= date('d/m/Y H:i', strtotime($recommendation['created_at'])) ?>
                                                     </td>
-                                                    <?php if (in_array($_SESSION['role'], ['admin', 'doctor'])): ?>
-                                                        <td>
+                                                    <td>
+                                                        <?php if ($_SESSION['role'] === 'patient'): ?>
+                                                            <button type="button"
+                                                                class="btn btn-info btn-sm view-recommendation"
+                                                                data-bs-toggle="modal" data-bs-target="#viewRecommendationModal"
+                                                                data-recommendation='<?= htmlspecialchars(json_encode($recommendation), ENT_QUOTES, 'UTF-8') ?>'>
+                                                                <i class="ti ti-eye"></i>
+                                                            </button>
+                                                        <?php elseif (in_array($_SESSION['role'], ['admin', 'doctor'])): ?>
                                                             <button type="button"
                                                                 class="btn btn-info btn-sm view-recommendation me-1"
                                                                 data-recommendation='<?= htmlspecialchars(json_encode($recommendation), ENT_QUOTES, 'UTF-8') ?>'>
@@ -169,8 +174,8 @@ $totalRecommendations = count($recommendations);
                                                                 data-id="<?= $recommendation['patient_recommendation_id'] ?>">
                                                                 <i class="ti ti-trash"></i>
                                                             </button>
-                                                        </td>
-                                                    <?php endif; ?>
+                                                        <?php endif; ?>
+                                                    </td>
                                                 </tr>
                                             <?php endforeach; ?>
                                         </tbody>
