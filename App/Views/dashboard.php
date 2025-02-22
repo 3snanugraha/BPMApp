@@ -6,6 +6,7 @@ require_once __DIR__ . '/../Controllers/DokterController.php';
 require_once __DIR__ . '/../Controllers/PencatatanController.php';
 require_once __DIR__ . '/../Controllers/PengobatanController.php';
 require_once __DIR__ . '/../Controllers/RekomendasiController.php';
+require_once __DIR__ . '/../Controllers/AdminController.php';
 
 session_start();
 
@@ -30,8 +31,33 @@ if ($userRole === 'patient') {
     // Dashboard-specific data retrieval
     $activeMedications = $pengobatanController->getDashboardMedications($patientId);
     $recommendations = $rekomendasiController->getDashboardRecommendations($patientId);
-}
+} elseif ($userRole === 'doctor') {
+    $dokterController = new DokterController();
+    $doctorProfile = $dokterController->getDoctorProfile($_SESSION['user_id']);
+    $doctorId = $doctorProfile['doctor_id'];
 
+    // Get statistics
+    $totalPatients = $dokterController->getTotalPatients($doctorId);
+    $activeCases = $dokterController->getActiveCases($doctorId);
+    $activemedications = $dokterController->getActiveMedications($doctorId);
+    $totalRecommendations = $dokterController->getTotalRecommendations($doctorId);
+
+    // Get recent data
+    $recentPatients = $dokterController->getRecentPatients($doctorId);
+    $recentRecommendations = $dokterController->getRecentRecommendations($doctorId);
+} elseif ($userRole === 'admin') {
+    $adminController = new AdminController();
+
+    // Get statistics
+    $totalUsers = $adminController->getTotalUsers();
+    $totalDoctors = $adminController->getTotalDoctors();
+    $totalPatients = $adminController->getTotalPatients();
+    $totalReadings = $adminController->getTotalReadings();
+    $totalMedications = $adminController->getTotalMedications();
+
+    // Get recent activities
+    $recentActivities = $adminController->getRecentActivities();
+}
 
 ?>
 

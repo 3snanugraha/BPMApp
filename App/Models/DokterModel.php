@@ -250,4 +250,58 @@ class DokterModel
         // Additional method for future schedule implementation
         return [];
     }
+
+    public function getTotalPatients($doctorId)
+    {
+        $query = "SELECT COUNT(DISTINCT patient_id) as total 
+              FROM doctor_patients 
+              WHERE doctor_id = ?";
+        $result = $this->db->query($query, [$doctorId])->fetch();
+        return $result['total'];
+    }
+
+    public function getActiveMedications($doctorId)
+    {
+        $query = "SELECT COUNT(*) as total 
+              FROM patient_medications 
+              WHERE prescribed_by = ? 
+              AND end_date >= CURRENT_DATE";
+        $result = $this->db->query($query, [$doctorId])->fetch();
+        return $result['total'];
+    }
+
+    public function getTotalRecommendations($doctorId)
+    {
+        $query = "SELECT COUNT(*) as total 
+              FROM patient_recommendations pr
+              JOIN doctor_profiles dp ON pr.created_by = dp.user_id
+              WHERE dp.doctor_id = ?";
+        $result = $this->db->query($query, [$doctorId])->fetch();
+        return $result['total'];
+    }
+
+    public function getRecentPatients($doctorId)
+    {
+        $query = "SELECT p.*, bpr.systolic, bpr.diastolic, bpr.reading_date
+              FROM doctor_patients dp
+              JOIN patient_profiles p ON dp.patient_id = p.patient_id
+              LEFT JOIN blood_pressure_readings bpr ON p.patient_id = bpr.patient_id
+              WHERE dp.doctor_id = ?
+              ORDER BY bpr.reading_date DESC
+              LIMIT 5";
+        return $this->db->query($query, [$doctorId])->fetchAll();
+    }
+
+    public function getRecentRecommendations($doctorId)
+    {
+        $query = "SELECT pr.*, pp.full_name as patient_name
+              FROM patient_recommendations pr
+              JOIN doctor_profiles dp ON pr.created_by = dp.user_id
+              JOIN patient_profiles pp ON pr.patient_id = pp.patient_id
+              WHERE dp.doctor_id = ?
+              ORDER BY pr.created_at DESC
+              LIMIT 5";
+        return $this->db->query($query, [$doctorId])->fetchAll();
+    }
+
 }

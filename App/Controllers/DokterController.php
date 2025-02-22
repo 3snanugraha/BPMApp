@@ -263,6 +263,32 @@ class DokterController
     {
         return $this->dokterModel->getPrescribedMedications($patientId);
     }
+
+    public function getTotalPatients($doctorId)
+    {
+        return $this->dokterModel->getTotalPatients($doctorId);
+    }
+
+    public function getActiveMedications($doctorId)
+    {
+        return $this->dokterModel->getActiveMedications($doctorId);
+    }
+
+    public function getTotalRecommendations($doctorId)
+    {
+        return $this->dokterModel->getTotalRecommendations($doctorId);
+    }
+
+    public function getRecentPatients($doctorId)
+    {
+        return $this->dokterModel->getRecentPatients($doctorId);
+    }
+
+    public function getRecentRecommendations($doctorId)
+    {
+        return $this->dokterModel->getRecentRecommendations($doctorId);
+    }
+
 }
 
 // Handle incoming requests

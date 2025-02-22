@@ -41,6 +41,10 @@ class PengobatanController
             exit();
         }
 
+        // Get doctor_id from doctor_profiles
+        $query = "SELECT doctor_id FROM doctor_profiles WHERE user_id = ?";
+        $doctorId = $this->pengobatanModel->getDoctorId($_SESSION['user_id']);
+
         $prescriptionData = [
             'patient_id' => $_POST['patient_id'],
             'medication_id' => $_POST['medication_id'],
@@ -48,7 +52,7 @@ class PengobatanController
             'frequency' => $_POST['frequency'],
             'start_date' => $_POST['start_date'],
             'end_date' => $_POST['end_date'],
-            'prescribed_by' => $_SESSION['user_id'],
+            'prescribed_by' => $doctorId, // Use doctor_id instead of user_id
             'notes' => $_POST['notes']
         ];
 
@@ -61,6 +65,7 @@ class PengobatanController
         header('Location: ../Views/pengobatan.php');
         exit();
     }
+
 
     private function handleEditPrescription()
     {

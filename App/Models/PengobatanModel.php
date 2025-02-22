@@ -75,6 +75,11 @@ class PengobatanModel
         return $this->db->query($query, [$patientId])->fetchAll();
     }
 
+    public function getDoctorId($userId)
+    {
+        $query = "SELECT doctor_id FROM doctor_profiles WHERE user_id = ?";
+        return $this->db->query($query, [$userId])->fetch(PDO::FETCH_COLUMN);
+    }
 
     public function getDoctorPrescriptions($doctorId)
     {
