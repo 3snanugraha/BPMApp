@@ -35,7 +35,7 @@ CREATE TABLE `blood_pressure_readings` (
   `pulse_rate` int DEFAULT NULL,
   `reading_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `notes` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ;
 
 --
 -- Dumping data for table `blood_pressure_readings`
@@ -57,7 +57,7 @@ CREATE TABLE `doctor_patients` (
   `doctor_id` int NOT NULL,
   `patient_id` int NOT NULL,
   `assigned_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ;
 
 --
 -- Dumping data for table `doctor_patients`
@@ -80,7 +80,7 @@ CREATE TABLE `doctor_profiles` (
   `specialization` varchar(100) DEFAULT NULL,
   `license_number` varchar(50) NOT NULL,
   `phone_number` varchar(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ;
 
 --
 -- Dumping data for table `doctor_profiles`
@@ -103,7 +103,7 @@ CREATE TABLE `medications` (
   `dosage_form` varchar(50) DEFAULT NULL,
   `created_by` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ;
 
 --
 -- Dumping data for table `medications`
@@ -130,7 +130,7 @@ CREATE TABLE `patient_medications` (
   `end_date` date DEFAULT NULL,
   `prescribed_by` int DEFAULT NULL,
   `notes` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ;
 
 --
 -- Dumping data for table `patient_medications`
@@ -158,7 +158,7 @@ CREATE TABLE `patient_profiles` (
   `emergency_contact` varchar(100) DEFAULT NULL,
   `emergency_phone` varchar(20) DEFAULT NULL,
   `medical_history` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ;
 
 --
 -- Dumping data for table `patient_profiles`
@@ -182,7 +182,7 @@ CREATE TABLE `patient_recommendations` (
   `description` text NOT NULL,
   `created_by` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ;
 
 --
 -- Dumping data for table `patient_recommendations`
@@ -208,7 +208,7 @@ CREATE TABLE `users` (
   `role` enum('admin','doctor','patient') NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ;
 
 --
 -- Dumping data for table `users`

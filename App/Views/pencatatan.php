@@ -113,7 +113,8 @@ $totalReadings = count($readings);
                         <div class="card">
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="readingTable" class="table table-striped dt-responsive nowrap w-100">
+                                    <table id="readingTable"
+                                        class="table table-striped table-bordered dt-responsive nowrap w-100">
                                         <thead>
                                             <tr>
                                                 <?php if ($_SESSION['role'] !== 'patient'): ?>
@@ -124,7 +125,7 @@ $totalReadings = count($readings);
                                                 <th>Detak Jantung</th>
                                                 <th>Tanggal</th>
                                                 <th>Catatan</th>
-                                                <th>Aksi</th>
+                                                <th width="120px">Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -139,28 +140,31 @@ $totalReadings = count($readings);
                                                     <td><?= date('d/m/Y H:i', strtotime($reading['reading_date'])) ?></td>
                                                     <td><?= htmlspecialchars($reading['notes']) ?></td>
                                                     <td>
-                                                        <button type="button" class="btn btn-info btn-sm view-reading"
-                                                            data-bs-toggle="modal" data-bs-target="#viewReadingModal"
-                                                            data-reading='<?= json_encode($reading) ?>'>
-                                                            <i class="ti ti-eye"></i>
-                                                        </button>
-                                                        <button type="button" class="btn btn-warning btn-sm edit-reading"
-                                                            data-bs-toggle="modal" data-bs-target="#editReadingModal"
-                                                            data-reading='<?= json_encode([
-                                                                "reading_id" => $reading["reading_id"],
-                                                                "systolic" => $reading["systolic"],
-                                                                "diastolic" => $reading["diastolic"],
-                                                                "pulse_rate" => $reading["pulse_rate"],
-                                                                "notes" => $reading["notes"]
-                                                            ]) ?>'>
-                                                            <i class="ti ti-edit"></i>
-                                                        </button>
-                                                        <button type="button" class="btn btn-danger btn-sm delete-reading"
-                                                            data-bs-toggle="modal" data-bs-target="#deleteReadingModal"
-                                                            data-reading-id="<?= $reading['reading_id'] ?>">
-                                                            <i class="ti ti-trash"></i>
-                                                        </button>
-
+                                                        <div class="btn-group" role="group">
+                                                            <button type="button" class="btn btn-info btn-sm view-reading"
+                                                                data-bs-toggle="modal" data-bs-target="#viewReadingModal"
+                                                                data-reading='<?= json_encode($reading) ?>'>
+                                                                <i class="ti ti-eye"></i>
+                                                            </button>
+                                                            <button type="button"
+                                                                class="btn btn-warning btn-sm edit-reading"
+                                                                data-bs-toggle="modal" data-bs-target="#editReadingModal"
+                                                                data-reading='<?= json_encode([
+                                                                    "reading_id" => $reading["reading_id"],
+                                                                    "systolic" => $reading["systolic"],
+                                                                    "diastolic" => $reading["diastolic"],
+                                                                    "pulse_rate" => $reading["pulse_rate"],
+                                                                    "notes" => $reading["notes"]
+                                                                ]) ?>'>
+                                                                <i class="ti ti-edit"></i>
+                                                            </button>
+                                                            <button type="button"
+                                                                class="btn btn-danger btn-sm delete-reading"
+                                                                data-bs-toggle="modal" data-bs-target="#deleteReadingModal"
+                                                                data-reading-id="<?= $reading['reading_id'] ?>">
+                                                                <i class="ti ti-trash"></i>
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             <?php endforeach; ?>
@@ -199,29 +203,25 @@ $totalReadings = count($readings);
                 }
             });
 
-            $('.edit-reading').on('click', function () {
+            // Improved modal data handling
+            $('#readingTable').on('click', '.edit-reading', function () {
                 var reading = $(this).data('reading');
-                if (reading) {
-                    $('#edit_reading_id').val(reading.reading_id);
-                    $('#edit_systolic').val(reading.systolic);
-                    $('#edit_diastolic').val(reading.diastolic);
-                    $('#edit_pulse_rate').val(reading.pulse_rate);
-                    $('#edit_notes').val(reading.notes);
-                }
+                $('#edit_reading_id').val(reading.reading_id);
+                $('#edit_systolic').val(reading.systolic);
+                $('#edit_diastolic').val(reading.diastolic);
+                $('#edit_pulse_rate').val(reading.pulse_rate);
+                $('#edit_notes').val(reading.notes);
             });
 
-            $('.view-reading').on('click', function () {
+            $('#readingTable').on('click', '.view-reading', function () {
                 var reading = $(this).data('reading');
-                if (reading) {
-                    $('#view_blood_pressure').text(reading.systolic + '/' + reading.diastolic + ' mmHg');
-                    $('#view_pulse_rate').text(reading.pulse_rate + ' bpm');
-                    $('#view_reading_date').text(new Date(reading.reading_date).toLocaleString('id-ID'));
-                    $('#view_notes').text(reading.notes || '-');
-                }
+                $('#view_blood_pressure').text(reading.systolic + '/' + reading.diastolic + ' mmHg');
+                $('#view_pulse_rate').text(reading.pulse_rate + ' bpm');
+                $('#view_reading_date').text(new Date(reading.reading_date).toLocaleString('id-ID'));
+                $('#view_notes').text(reading.notes || '-');
             });
 
-            // Delete Reading Handler
-            $('.delete-reading').on('click', function () {
+            $('#readingTable').on('click', '.delete-reading', function () {
                 var readingId = $(this).data('reading-id');
                 $('#delete_reading_id').val(readingId);
             });
